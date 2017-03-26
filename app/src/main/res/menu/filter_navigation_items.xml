@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/shuttle_filter"
+        android:icon="@drawable/ic_airport_shuttle_black_24dp"
+        android:title="shuttle"/>
+
+    <item
+        android:id="@+id/dashboard_filter"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="dasboard"/>
+
+    <item
+        android:id="@+id/favorite_filter"
+        android:icon="@drawable/ic_favorite_border_black_24dp"
+        android:title="favorite"/>
+
+    <item
+        android:id="@+id/takeoff_filter"
+        android:icon="@drawable/ic_flight_takeoff_black_24dp"
+        android:title="takeoff"/>
+
+</menu>
