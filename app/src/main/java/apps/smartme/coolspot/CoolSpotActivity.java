@@ -25,13 +25,7 @@ public class CoolSpotActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.btn_coolspot);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(CoolSpotActivity.this, "The button is working", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
