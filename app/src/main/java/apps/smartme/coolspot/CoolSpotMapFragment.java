@@ -301,7 +301,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
 
 //         Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(getActivity().getApplicationContext())
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.pick_place)
                 .setItems(mLikelyPlaceNames, listener)
                 .show();

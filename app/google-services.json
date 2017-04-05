@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "559661406457",
+    "firebase_url": "https://coolspotdisertatie-5bdaa.firebaseio.com",
+    "project_id": "coolspotdisertatie-5bdaa",
+    "storage_bucket": "coolspotdisertatie-5bdaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559661406457:android:1af7cf0661da2eed",
+        "android_client_info": {
+          "package_name": "apps.smartme.coolspot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559661406457-dq2a4bq64ctpgvsu558po71lhqeg6ivc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0YT803puqNe6l4dAicDmioZYQ0akndoo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
