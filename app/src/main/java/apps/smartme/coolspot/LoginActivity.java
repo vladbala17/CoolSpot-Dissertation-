@@ -43,9 +43,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-//                    Toast.makeText(LoginActivity.this, "am ajuns aici", Toast.LENGTH_SHORT);
-//                    Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
-//                    startActivity(loginIntent);
+                    Toast.makeText(LoginActivity.this, "am ajuns aici", Toast.LENGTH_SHORT);
+                    Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
+                    startActivity(loginIntent);
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {

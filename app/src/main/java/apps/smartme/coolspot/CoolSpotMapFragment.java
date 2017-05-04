@@ -64,6 +64,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
 
+
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -75,6 +77,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
+
     }
 
     @Override
