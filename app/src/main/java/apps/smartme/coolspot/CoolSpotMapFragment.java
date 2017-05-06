@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -55,7 +56,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private boolean mLocationPermissionGranted;
 
     // Used for selecting the current place.
-    private final int mMaxEntries = 5;
+    private final int mMaxEntries = 10;
     private String[] mLikelyPlaceNames = new String[mMaxEntries];
     private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
     private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
@@ -63,7 +64,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
-
 
 
     @Override
@@ -266,7 +266,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
                     // Show a dialog offering the user the list of likely places, and add a
                     // marker at the selected place.
-                    openPlacesDialog();
+                    openSuggestedPlacesDialog();
                 }
             });
         } else {
@@ -278,7 +278,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    private void openPlacesDialog() {
+    private void openSuggestedPlacesDialog() {
         DialogInterface.OnClickListener listener =
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -302,6 +302,28 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     }
                 };
 
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setView(R.layout.custom_place_detail_view)
+                        .setPositiveButton("I want there", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNegativeButton("Find similar places", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return false;
+            }
+        });
 
 //         Display the dialog.
         AlertDialog dialog = new AlertDialog.Builder(getContext())

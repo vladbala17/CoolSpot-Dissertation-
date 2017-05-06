@@ -25,11 +25,13 @@ public class CoolSpotActivity extends AppCompatActivity {
         SearchView toolbar = (SearchView) findViewById(R.id.toolbar);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
+        bottomNavigationView.setItemIconTintList(null);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         CoolSpotMapFragment coolSpotMapFragment = new CoolSpotMapFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
