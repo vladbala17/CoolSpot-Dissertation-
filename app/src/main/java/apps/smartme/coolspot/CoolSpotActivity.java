@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 public class CoolSpotActivity extends AppCompatActivity {
 
@@ -40,6 +41,7 @@ public class CoolSpotActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG,"onBackPressed was pressed");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
