@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/location_iv"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/ic_dance" />
+
+    <TextView
+        android:id="@+id/location_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/location_iv"
+        android:text="Location name" />
+
+    <TextView
+        android:id="@+id/location_value_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/location_name_tv"
+        android:text="Location value" />
+
+    <TextView
+        android:id="@+id/location_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_name_tv"
+        android:layout_toRightOf="@id/location_iv"
+        android:text="Date" />
+
+    <TextView
+        android:id="@+id/location_date_value_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_value_tv"
+        android:layout_toRightOf="@id/location_date_tv"
+        android:text="Date value" />
+
+    <TextView
+        android:id="@+id/used_filters_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_date_tv"
+        android:layout_toRightOf="@id/location_iv"
+        android:text="Used filters" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/used_styles_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_date_value_tv"
+        android:layout_toRightOf="@id/used_filters_tv" />
+
+</RelativeLayout>

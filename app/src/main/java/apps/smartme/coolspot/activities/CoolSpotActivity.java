@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.activities;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,6 +17,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.MenuItem;
+
+import apps.smartme.coolspot.CoolSpotMapFragment;
+import apps.smartme.coolspot.CustomTypefaceSpan;
+import apps.smartme.coolspot.FontTypeface;
+import apps.smartme.coolspot.R;
 
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

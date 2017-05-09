@@ -34,13 +34,14 @@ public class PlacePickerDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         CharSequence[] places = getArguments().getCharSequenceArray(PLACE_KEY);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        PlacePickerAdapter placePickerAdapter = new PlacePickerAdapter(getContext(), places);
         View view = getActivity().getLayoutInflater().inflate(R.layout.custom_title, null);
+        PlacePickerAdapter placePickerAdapter = new PlacePickerAdapter(getContext(), places);
 
         builder.setCustomTitle(view)
                 .setAdapter(placePickerAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(),"proba");
                         Toast.makeText(getActivity(), "INSFARSIT", Toast.LENGTH_SHORT).show();
                     }
                 });

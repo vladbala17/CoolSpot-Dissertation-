@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
+import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
 
 /**
@@ -323,33 +325,19 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placePicker");
 
-                AlertDialog dialog = new AlertDialog.Builder(getContext())
-                        .setView(R.layout.custom_place_detail_view)
-                        .setPositiveButton("I want there", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNegativeButton("Find similar places", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .show();
                 return false;
             }
         });
 
 //         Display the dialog.
-//        AlertDialog dialog = new AlertDialog.Builder(getContext())
-//                .setTitle(R.string.pick_place)
-//                .setItems(mLikelyPlaceNames, listener)
-//                .show();
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.pick_place)
+                .setItems(mLikelyPlaceNames, listener)
+                .show();
 
-        PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+       // PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
 
     }
 
