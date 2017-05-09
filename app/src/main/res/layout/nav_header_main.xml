@@ -26,7 +26,7 @@
         android:gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Vlad Bala"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
     <TextView
         android:id="@+id/textView"

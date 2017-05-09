@@ -7,4 +7,6 @@
     <string name="pick_place">I am here</string>
     <string name="facebook_app_id">1404000559670365</string>
     <string name="fb_login_protocol_scheme">fb1404000559670365</string>
+    <string name="signin">intra</string>
+    <string name="cancel">pleaca</string>
 </resources>

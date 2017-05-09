@@ -2,6 +2,7 @@ package apps.smartme.coolspot;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,8 +34,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import apps.smartme.coolspot.dialogs.PlacePickerDialog;
 
 /**
  * Created by vlad on 26.03.2017.
@@ -56,7 +60,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private boolean mLocationPermissionGranted;
 
     // Used for selecting the current place.
-    private final int mMaxEntries = 10;
+    private final int mMaxEntries = 5;
     private String[] mLikelyPlaceNames = new String[mMaxEntries];
     private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
     private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
@@ -108,7 +112,21 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        //  mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            getContext(), R.raw.style_map));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -326,10 +344,13 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
 //         Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
+//        AlertDialog dialog = new AlertDialog.Builder(getContext())
+//                .setTitle(R.string.pick_place)
+//                .setItems(mLikelyPlaceNames, listener)
+//                .show();
+
+        PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+
     }
 
 }

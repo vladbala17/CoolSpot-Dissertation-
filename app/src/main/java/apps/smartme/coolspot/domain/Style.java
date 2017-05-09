@@ -5,20 +5,27 @@ package apps.smartme.coolspot.domain;
  */
 
 public class Style {
-    private String name;
+    private int styleImage;
+    private String styleName;
 
-    public Style(String name) {
-        this.name = name;
+    public Style(String styleName, int styleImage) {
+        this.styleImage = styleImage;
+        this.styleName = styleName;
     }
 
-    public Style() {
+    public int getStyleImage() {
+        return styleImage;
     }
 
-    public String getName() {
-        return name;
+    public void setStyleImage(int styleImage) {
+        this.styleImage = styleImage;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getStyleName() {
+        return styleName;
+    }
+
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
     }
 }
