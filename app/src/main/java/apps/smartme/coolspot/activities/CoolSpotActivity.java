@@ -9,14 +9,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import apps.smartme.coolspot.CoolSpotMapFragment;
 import apps.smartme.coolspot.CustomTypefaceSpan;
@@ -26,6 +27,8 @@ import apps.smartme.coolspot.R;
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "CoolSpotActivity";
+    String userID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,17 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         setContentView(R.layout.activity_cool_spot);
         SearchView toolbar = (SearchView) findViewById(R.id.toolbar);
 
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                userID= null;
+            } else {
+                userID= extras.getString("userId");
+            }
+        } else {
+            userID= (String) savedInstanceState.getSerializable("userId");
+        }
+        Log.d(TAG,"============================"+userID+"===================");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
 
@@ -42,6 +56,9 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
+        ImageView profilePictureView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        Picasso.with(this).load("https://graph.facebook.com/" + userID + "/picture").into(profilePictureView);
+
 
         changeTypeface(navigationView);
         CoolSpotMapFragment coolSpotMapFragment = new CoolSpotMapFragment();

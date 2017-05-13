@@ -1,13 +1,17 @@
 package apps.smartme.coolspot.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.PlacePickerAdapter;
@@ -28,25 +32,25 @@ public class PlacePickerDialog extends DialogFragment {
         return f;
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        CharSequence[] places = getArguments().getCharSequenceArray(PLACE_KEY);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.custom_title, null);
-        PlacePickerAdapter placePickerAdapter = new PlacePickerAdapter(getContext(), places);
-
-        builder.setCustomTitle(view)
-                .setAdapter(placePickerAdapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(),"proba");
-                        Toast.makeText(getActivity(), "INSFARSIT", Toast.LENGTH_SHORT).show();
-                    }
-                });
-        return builder.create();
-
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        CharSequence[] places = getArguments().getCharSequenceArray(PLACE_KEY);
+        View v = inflater.inflate(R.layout.custom_place_picker_dialog, null, false);
+        TextView titleTextView = (TextView) v.findViewById(R.id.place_picker_txt);
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
+        titleTextView.setTypeface(tf);
+        PlacePickerAdapter placePickerAdapter = new PlacePickerAdapter(getContext(), places);
+        ListView placePickerListView = (ListView) v.findViewById(R.id.places_lv);
+        placePickerListView.setAdapter(placePickerAdapter);
+        return v;
+    }
 }

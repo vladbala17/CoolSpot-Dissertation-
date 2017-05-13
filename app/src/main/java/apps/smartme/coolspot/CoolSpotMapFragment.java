@@ -18,12 +18,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -37,7 +41,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import apps.smartme.coolspot.activities.CoolSpotActivity;
 import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
 import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
@@ -47,15 +57,17 @@ import apps.smartme.coolspot.dialogs.PlacePickerDialog;
  */
 
 public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
 
     private static final String TAG = CoolSpotMapFragment.class.getSimpleName();
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
+    LocationRequest mLocationRequest;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
+    LatLng latLng;
 
     GoogleMap mMap;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -89,6 +101,13 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View view = layoutInflater.inflate(R.layout.map_fragment, viewGroup, false);
+        ImageButton imageButton = (ImageButton) view.findViewById(R.id.recommend_btn);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -134,7 +153,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
-
+        // getDeviceLocation();
 
     }
 
@@ -225,12 +244,42 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         } else {
             Log.d(TAG, "Current location is null. Using defaults.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+        Toast.makeText(getActivity(), "onConnected", Toast.LENGTH_SHORT).show();
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            //place marker at current position
+            //mGoogleMap.clear();
+//            latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//            MarkerOptions markerOptions = new MarkerOptions();
+//            markerOptions.position(latLng);
+//            markerOptions.title("Current Position");
+//            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//            currLocationMarker = mGoogleMap.addMarker(markerOptions);
+        }
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(5000); //5 seconds
+        mLocationRequest.setFastestInterval(3000); //3 seconds
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
     }
 
@@ -331,14 +380,38 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-//         Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
+        //  Display the dialog.
+//        AlertDialog dialog = new AlertDialog.Builder(getContext())
+//                .setTitle(R.string.pick_place)
+//                .setItems(mLikelyPlaceNames, listener)
+//                .show();
 
-       // PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+//         PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDefine");
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        //place marker at current position
+        //mGoogleMap.clear();
+//        if (currLocationMarker != null) {
+//            currLocationMarker.remove();
+//        }
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Position");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//        currLocationMarker = mGoogleMap.addMarker(markerOptions);
+//
+//        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
+
+        //zoom to current position:
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+
+        //If you only need one location, unregister the listener
+        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+
+    }
 }

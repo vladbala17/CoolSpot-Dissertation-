@@ -1,12 +1,9 @@
 package apps.smartme.coolspot.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +31,7 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
     @Override
     public StyleDialogAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.place_define__dialog_item, parent, false);
+                .inflate(R.layout.place_define_dialog_item, parent, false);
 
         return new MyViewHolder(itemView);
     }

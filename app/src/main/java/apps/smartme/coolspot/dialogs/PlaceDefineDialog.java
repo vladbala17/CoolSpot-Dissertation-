@@ -4,12 +4,15 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -37,15 +40,13 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
         return t;
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.custom_place_define_dialog, null, false);
         prepareStyleData();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View placeDefineDialog = inflater.inflate(R.layout.custom_define_place_dialog, null);
-        searchView = (SearchView) placeDefineDialog.findViewById(R.id.search_view);
-        recyclerView = (RecyclerView) placeDefineDialog.findViewById(R.id.styles_galery);
+        searchView = (SearchView) v.findViewById(R.id.search_view);
+        recyclerView = (RecyclerView) v.findViewById(R.id.styles_galery);
         mAdapter = new StyleDialogAdapter(styleList);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -64,37 +65,45 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
             }
         }));
         searchView.setOnQueryTextListener(this);
-        builder.setView(placeDefineDialog)
-                .setPositiveButton("Mark place", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-        return builder.create();
+        searchView.setFocusable(true);
+//               .setPositiveButton("Mark place", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                })
+//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+        return v;
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+
     private void prepareStyleData() {
-        Style style = new Style("Caca", 2015);
+        Style style = new Style("Cool", 2015);
         styleList.add(style);
-        Style style1 = new Style("Maca", 2015);
+        Style style1 = new Style("Cheap", 2015);
         styleList.add(style1);
-        Style style2 = new Style("Para", 2015);
+        Style style2 = new Style("Expensive", 2015);
         styleList.add(style2);
-        Style style3 = new Style("Cutit", 2015);
+        Style style3 = new Style("Cool girls", 2015);
         styleList.add(style3);
-        Style style4 = new Style("Lemn", 2015);
+        Style style4 = new Style("Nerds", 2015);
         styleList.add(style4);
-        Style style5 = new Style("Lemnarie", 2015);
+        Style style5 = new Style("Shots", 2015);
         styleList.add(style5);
-        Style style6 = new Style("Macanache", 2015);
+        Style style6 = new Style("Concert", 2015);
         styleList.add(style6);
 
 

@@ -19,11 +19,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import apps.smartme.coolspot.activities.CoolSpotActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private String userId;
 
     CallbackManager callbackManager;
     private FirebaseAuth mAuth;
@@ -56,10 +59,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(final AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         // [START_EXCLUDE silent]
         // [END_EXCLUDE]
+        userId = token.getUserId();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -68,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
                         Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
+                        loginIntent.putExtra("userId", userId);
                         FirebaseUser user = mAuth.getCurrentUser();
+
 
                         startActivity(loginIntent);
                     }
@@ -87,8 +93,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        if (mAuth.getCurrentUser() != null) {
+            Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
+            loginIntent.putExtra("userId", userId);
+            startActivity(loginIntent);
+        }
     }
 
     @Override
@@ -99,6 +108,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (mAuth.getCurrentUser() != null) {
+            Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
+            loginIntent.putExtra("userId", userId);
+            startActivity(loginIntent);
+        }
     }
-}
 
+}
