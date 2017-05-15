@@ -1,5 +1,6 @@
 package apps.smartme.coolspot.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,15 +39,15 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                userID= null;
+            if (extras == null) {
+                userID = null;
             } else {
-                userID= extras.getString("userId");
+                userID = extras.getString("userId");
             }
         } else {
-            userID= (String) savedInstanceState.getSerializable("userId");
+            userID = (String) savedInstanceState.getSerializable("userId");
         }
-        Log.d(TAG,"============================"+userID+"===================");
+        Log.d(TAG, "============================" + userID + "===================");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
 
@@ -127,7 +128,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Intent intent = new Intent(this, FavouritesActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

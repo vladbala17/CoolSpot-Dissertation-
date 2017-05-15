@@ -387,8 +387,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 //                .show();
 
 //         PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
-        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDefine");
-
+//        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDefine");
+        PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
     }
 
     @Override

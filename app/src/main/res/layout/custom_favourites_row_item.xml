@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
@@ -48,27 +48,27 @@
         android:layout_toRightOf="@id/location_iv"
         android:text="Used filters" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/used_styles_recycler_view"
+    <LinearLayout
+        android:id="@+id/used_filters_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/location_date_value_tv"
-        android:layout_toRightOf="@id/used_filters_tv" />
+        android:layout_below="@+id/used_filters_tv"
+        android:layout_toEndOf="@+id/location_iv"
+        android:background="@color/colorAccent">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/location_visits_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/used_filters_tv"
+        android:layout_below="@id/used_filters_layout"
         android:layout_toRightOf="@id/location_iv"
         android:text="Date value" />
 
-    <TextView
-        android:id="@+id/location_visits_value_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/used_styles_recycler_view"
-        android:layout_toRightOf="@id/location_visits_tv"
-        android:text="Used filters" />
 
 </RelativeLayout>

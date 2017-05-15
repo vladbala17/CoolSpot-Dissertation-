@@ -4,12 +4,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -40,9 +44,15 @@ public class PlaceDetailsDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         prepareStyleData();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View placeDefineDialog = inflater.inflate(R.layout.custom_place_details_dialog, null);
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View placeDefineDialog = inflater.inflate(R.layout.custom_place_details_dialog, null, false);
         recyclerView = (RecyclerView) placeDefineDialog.findViewById(R.id.cool_points_recycler_view);
         mAdapter = new StyleDialogAdapter(styleList);
         LinearLayoutManager layoutManager
@@ -50,21 +60,7 @@ public class PlaceDetailsDialog extends DialogFragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
 
-        builder.setView(placeDefineDialog)
-                .setPositiveButton("I want there", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton("Keep looking", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-        return builder.create();
+        return placeDefineDialog;
     }
 
     private void prepareStyleData() {

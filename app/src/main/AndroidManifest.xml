@@ -37,7 +37,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.HistoryActivity" />
-        <activity android:name=".activities.FavouritesActivity"></activity>
+        <activity
+            android:name=".activities.FavouritesActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.CoolSpotActivity"/>
     </application>
 
 </manifest>

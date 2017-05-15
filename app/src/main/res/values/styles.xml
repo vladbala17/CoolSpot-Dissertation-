@@ -35,4 +35,5 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:background">@drawable/side_nav_menu</item>
     </style>
+
 </resources>

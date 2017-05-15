@@ -1,40 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/side_nav_menu"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/place_details_name"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/side_nav_bar"
+        android:gravity="center"
+        android:text="Place Name"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/time_last_visited"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/place_details_name"
         android:text="Time" />
 
     <TextView
+        android:id="@+id/cool_points_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/time_last_visited"
         android:text="Cool points" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cool_points_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#eacded"
+        android:layout_below="@id/cool_points_text_view" />
+
+
+    <TextView
+        android:id="@+id/mutual_friends_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cool_points_recycler_view"
+        android:text="Mutual friends" />
+
+    <TextView
+        android:id="@+id/mutual_friends_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cool_points_recycler_view"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@+id/mutual_friends_text_view"
+        android:text="friends number" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/mutual_friends_text_view"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mutual friends" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/keep_looking_btn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="friends number" />
+            android:layout_weight="0.5"
+            android:background="@drawable/side_nav_bar"
+            android:text="Keep looking" />
+
+        <Button
+            android:id="@+id/take_me_there_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/side_nav_bar"
+            android:text="Take me there" />
 
 
     </LinearLayout>
 
-</LinearLayout>
+
+
+</RelativeLayout>
