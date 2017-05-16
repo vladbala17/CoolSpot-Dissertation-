@@ -1,6 +1,8 @@
 package apps.smartme.coolspot.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,8 +23,13 @@ import apps.smartme.coolspot.adapters.PlacePickerAdapter;
  * Created by vlad on 08.05.2017.
  */
 
-public class PlacePickerDialog extends DialogFragment {
+public class PlacePickerDialog extends DialogFragment implements AdapterView.OnItemClickListener {
     private static final String PLACE_KEY = "place";
+    public static final String SELECTED_ITEM_POSITION = "selected_item_position";
+    public static final int PLACE_DEFINE_DIALOG = 2;
+    public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
+    public static final String SELECTED_ITEM_NAME = "selected_item_name";
+    ListView placePickerListView;
 
 
     public static PlacePickerDialog newInstance(String[] placesList) {
@@ -49,8 +57,25 @@ public class PlacePickerDialog extends DialogFragment {
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
         titleTextView.setTypeface(tf);
         PlacePickerAdapter placePickerAdapter = new PlacePickerAdapter(getContext(), places);
-        ListView placePickerListView = (ListView) v.findViewById(R.id.places_lv);
+        placePickerListView = (ListView) v.findViewById(R.id.places_lv);
+        placePickerListView.setOnItemClickListener(this);
         placePickerListView.setAdapter(placePickerAdapter);
         return v;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent();
+        intent.putExtra(SELECTED_ITEM_POSITION, position);
+        intent.putExtra(SELECTED_ITEM_NAME, (String) placePickerListView.getItemAtPosition(position));
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+
+        getDialog().dismiss();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        setTargetFragment(this, PLACE_DEFINE_DIALOG_MARKER);
     }
 }

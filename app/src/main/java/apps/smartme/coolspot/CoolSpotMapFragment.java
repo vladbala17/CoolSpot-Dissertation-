@@ -1,6 +1,8 @@
 package apps.smartme.coolspot;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -62,6 +65,11 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     // location retrieved by the Fused Location Provider.
 
     private static final String TAG = CoolSpotMapFragment.class.getSimpleName();
+    public static final int PLACE_PICKER_DIALOG = 1;
+    public static final int PLACE_DEFINE_DIALOG = 2;
+    public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
+
+
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
     LocationRequest mLocationRequest;
@@ -82,7 +90,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
-
+    public static final String SELECTED_ITEM = "selected_item";
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -348,37 +356,39 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void openSuggestedPlacesDialog() {
-        DialogInterface.OnClickListener listener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The "which" argument contains the position of the selected item.
-                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                        String markerSnippet = mLikelyPlaceAddresses[which];
-                        if (mLikelyPlaceAttributions[which] != null) {
-                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                        }
-                        // Add a marker for the selected place, with an info window
-                        // showing information about that place.
-                        mMap.addMarker(new MarkerOptions()
-                                .title(mLikelyPlaceNames[which])
-                                .position(markerLatLng)
-                                .snippet(markerSnippet));
 
-                        // Position the map's camera at the location of the marker.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                                DEFAULT_ZOOM));
-                    }
-                };
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placePicker");
-
-                return false;
-            }
-        });
+//        DialogInterface.OnClickListener listener =
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // The "which" argument contains the position of the selected item.
+//                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
+//                        String markerSnippet = mLikelyPlaceAddresses[which];
+//                        if (mLikelyPlaceAttributions[which] != null) {
+//                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
+//                        }
+//                        // Add a marker for the selected place, with an info window
+//                        // showing information about that place.
+//                        mMap.addMarker(new MarkerOptions()
+//                                .title(mLikelyPlaceNames[which])
+//                                .position(markerLatLng)
+//                                .snippet(markerSnippet));
+//
+//                        // Position the map's camera at the location of the marker.
+//                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+//                                DEFAULT_ZOOM));
+//                    }
+//                };
+//
+//
+//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//                PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
+//
+//                return false;
+//            }
+//        });
 
         //  Display the dialog.
 //        AlertDialog dialog = new AlertDialog.Builder(getContext())
@@ -386,9 +396,63 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 //                .setItems(mLikelyPlaceNames, listener)
 //                .show();
 
-//         PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+        //PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
+        PlacePickerDialog placePickerDialog = PlacePickerDialog.newInstance(mLikelyPlaceNames);
+        placePickerDialog.setTargetFragment(this, PLACE_PICKER_DIALOG);
+        placePickerDialog.show(getActivity().getSupportFragmentManager(), "placePicker");
 //        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDefine");
-        PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
+//        PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int position = data.getIntExtra(SELECTED_ITEM, 0);
+        String selectedItemName = data.getStringExtra(SELECTED_ITEM);
+        switch (requestCode) {
+            case PLACE_PICKER_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    // After Ok code.
+                    PlaceDefineDialog placeDefineDialog = PlaceDefineDialog.newInstance(selectedItemName);
+                    placeDefineDialog.setTargetFragment(this, PLACE_DEFINE_DIALOG);
+                    placeDefineDialog.show(getActivity().getSupportFragmentManager(), "placeDefine");
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    // After Cancel code.
+                }
+                break;
+            case PLACE_DEFINE_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    // After Ok code.
+                    LatLng markerLatLng = mLikelyPlaceLatLngs[position];
+                    String markerSnippet = mLikelyPlaceAddresses[position];
+                    if (mLikelyPlaceAttributions[position] != null) {
+                        markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[position];
+                    }
+                    // Add a marker for the selected place, with an info window
+                    // showing information about that place.
+                    mMap.addMarker(new MarkerOptions()
+                            .title(mLikelyPlaceNames[position])
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dance))
+                            .position(markerLatLng)
+                            .snippet(markerSnippet));
+
+
+                    // Position the map's camera at the location of the marker.
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+                            DEFAULT_ZOOM));
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
+
+                            return false;
+                        }
+                    });
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    // After Cancel code.
+                }
+                break;
+        }
     }
 
     @Override
@@ -413,5 +477,12 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         //If you only need one location, unregister the listener
         //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
+    }
+
+    private void setPlaceMarkerOnTheMap(int requestCode) {
+        switch (requestCode) {
+            case PLACE_DEFINE_DIALOG_MARKER:
+                break;
+        }
     }
 }

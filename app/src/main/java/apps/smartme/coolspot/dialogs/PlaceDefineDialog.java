@@ -1,7 +1,9 @@
 package apps.smartme.coolspot.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,14 +33,19 @@ import apps.smartme.coolspot.domain.Style;
  */
 
 public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
+    public static final String PLACE_NAME = "place_name";
     private List<Style> styleList = new ArrayList<>();
     private RecyclerView recyclerView;
     SearchView searchView;
     private StyleDialogAdapter mAdapter;
+    private TextView placeDefineTextView;
+    private Button markPlaceButton;
 
-    public static PlaceDefineDialog newInstance() {
+    public static PlaceDefineDialog newInstance(String placeName) {
         PlaceDefineDialog t = new PlaceDefineDialog();
-
+        Bundle args = new Bundle();
+        args.putString(PLACE_NAME, placeName);
+        t.setArguments(args);
         return t;
     }
 
@@ -44,7 +53,19 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.custom_place_define_dialog, null, false);
+        String placeDefineTitle = getArguments().getString(PLACE_NAME);
         prepareStyleData();
+        placeDefineTextView = (TextView) v.findViewById(R.id.place_define_name);
+        placeDefineTextView.setText(placeDefineTitle);
+        markPlaceButton = (Button) v.findViewById(R.id.mark_place_there_btn);
+        markPlaceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+                getDialog().dismiss();
+            }
+        });
         searchView = (SearchView) v.findViewById(R.id.search_view);
         recyclerView = (RecyclerView) v.findViewById(R.id.styles_galery);
         mAdapter = new StyleDialogAdapter(styleList);
