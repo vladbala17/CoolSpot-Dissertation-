@@ -41,20 +41,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
 import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
+import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.CoolspotLocation;
 
 /**
@@ -71,8 +71,16 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final int PLACE_DEFINE_DIALOG = 2;
     public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
 
+    //Firebase
+    DatabaseReference databaseReference;
+    DatabaseReference coolPointReference;
+    ChildEventListener coolPointChildEventListener;
 
-    List<CoolspotLocation> coolspotLocations = new ArrayList<CoolspotLocation>();
+
+    List<CoolspotLocation> coolspotLocations = new ArrayList<>();
+    List<Coolpoint> coolpointDrinkList = new ArrayList<>();
+    List<Coolpoint> coolpointFunList = new ArrayList<>();
+    List<Coolpoint> coolpointGirlsList = new ArrayList<>();
     ImageButton recommendButton;
 
 
@@ -120,31 +128,10 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("CoolspotLocation");
-        ref.addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get map of users in datasnapshot
-                        Map<String, Object> objectMap = (HashMap<String, Object>)
-                                dataSnapshot.getValue();
-                        for (Object obj : objectMap.values()) {
-                            if (obj instanceof Map) {
-                                Map<String, Object> mapObj = (Map<String, Object>) obj;
-                                CoolspotLocation match = new CoolspotLocation();
-                                match.setName((String) mapObj.get("name"));
-                                match.setLatitude((double) mapObj.get("latitude"));
-                                match.setLongitude((double) mapObj.get("longitude"));
-                                coolspotLocations.add(match);
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //handle databaseError
-                    }
-                });
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        coolPointReference = databaseReference.child("Coolpoint");
+
 
     }
 
@@ -152,7 +139,94 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         super.onStart();
 
+        ChildEventListener childEventCoolspotListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                switch (dataSnapshot.getKey()) {
+                    case "drink":
+                        collectDrinkCoolSpots((Map<String, Object>) dataSnapshot.getValue());
+                        break;
+                    case "girls":
+                        collectGirlsCoolSpots((Map<String, Object>) dataSnapshot.getValue());
+                        break;
+                    case "fun":
+                        collectFunCoolSpots((Map<String, Object>) dataSnapshot.getValue());
+                        break;
+                }
+            }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointReference.addChildEventListener(childEventCoolspotListener);
+        coolPointChildEventListener = childEventCoolspotListener;
+
+    }
+
+    private void collectDrinkCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointDrinkList.add(coolpoint);
+        }
+    }
+
+    private void collectGirlsCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointGirlsList.add(coolpoint);
+        }
+    }
+
+    private void collectFunCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointFunList.add(coolpoint);
+        }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (coolPointChildEventListener != null) {
+            coolPointReference.removeEventListener(coolPointChildEventListener);
+        }
     }
 
     @Override
@@ -262,7 +336,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void putLocationsOnMap(List<CoolspotLocation> coolspotLocations){
+    private void putLocationsOnMap(List<CoolspotLocation> coolspotLocations) {
         for (CoolspotLocation coolspotLocation : coolspotLocations) {
             mMap.addMarker(new MarkerOptions()
                     .title(coolspotLocation.getName())
@@ -347,7 +421,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 //        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 //
 //        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        putLocationsOnMap(coolspotLocations);
+        //putLocationsOnMap(coolspotLocations);
 
     }
 

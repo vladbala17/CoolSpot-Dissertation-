@@ -67,12 +67,12 @@ public class PlaceDetailsDialog extends DialogFragment {
     }
 
     private void prepareStyleData() {
-        Coolpoint style = new Coolpoint("Caca", 2015);
-        styleList.add(style);
-        Coolpoint style1 = new Coolpoint("Maca", 2015);
-        styleList.add(style1);
-        Coolpoint style2 = new Coolpoint("Para", 2015);
-        styleList.add(style2);
+//        Coolpoint style = new Coolpoint("Caca", 2015);
+//        styleList.add(style);
+//        Coolpoint style1 = new Coolpoint("Maca", 2015);
+//        styleList.add(style1);
+//        Coolpoint style2 = new Coolpoint("Para", 2015);
+//        styleList.add(style2);
 
 
 //        mAdapter.notifyDataSetChanged();

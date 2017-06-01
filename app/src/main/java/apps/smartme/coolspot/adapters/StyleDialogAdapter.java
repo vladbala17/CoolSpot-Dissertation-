@@ -39,8 +39,8 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
     @Override
     public void onBindViewHolder(StyleDialogAdapter.MyViewHolder holder, int position) {
         Coolpoint style = styleList.get(position);
-        holder.title.setText(style.getPointName());
-        holder.image.setImageResource(R.drawable.ic_dance);
+//        holder.title.setText(style.getPointName());
+//        holder.image.setImageResource(R.drawable.ic_dance);
     }
 
     @Override
@@ -60,17 +60,17 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
     }
 
     public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        styleList.clear();
-        if (charText.length() == 0) {
-            styleList.addAll(arraylist);
-        } else {
-            for (Coolpoint style : arraylist) {
-                if (style.getPointName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    styleList.add(style);
-                }
-            }
-        }
-        notifyDataSetChanged();
+//        charText = charText.toLowerCase(Locale.getDefault());
+//        styleList.clear();
+//        if (charText.length() == 0) {
+//            styleList.addAll(arraylist);
+//        } else {
+//            for (Coolpoint style : arraylist) {
+//                if (style.getPointName().toLowerCase(Locale.getDefault()).contains(charText)) {
+//                    styleList.add(style);
+//                }
+//            }
+//        }
+//        notifyDataSetChanged();
     }
 }

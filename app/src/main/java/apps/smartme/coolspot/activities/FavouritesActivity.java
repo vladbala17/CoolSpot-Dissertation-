@@ -36,7 +36,7 @@ public class FavouritesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Coolpoint style = styleList.get(position);
-                Toast.makeText(FavouritesActivity.this, style.getPointName() + " is selected!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(FavouritesActivity.this, style.getPointName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -48,24 +48,24 @@ public class FavouritesActivity extends AppCompatActivity {
 
     private void prepareStyleData() {
 
-        Coolpoint style = new Coolpoint("Cool", 2015);
-        styleList.add(style);
-        Coolpoint style1 = new Coolpoint("Cheap", 2015);
-        styleList.add(style1);
-        Coolpoint style2 = new Coolpoint("Expensive", 2015);
-        styleList.add(style2);
-        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
-        styleList.add(style3);
-        Coolpoint style4 = new Coolpoint("Nerds", 2015);
-        styleList.add(style4);
-        Coolpoint style5 = new Coolpoint("Shots", 2015);
-        styleList.add(style5);
-        Coolpoint style6 = new Coolpoint("Concert", 2015);
-        styleList.add(style6);
-        Coolpoint style7 = new Coolpoint("Lemne", 2015);
-        styleList.add(style7);
-        Coolpoint style8 = new Coolpoint("Acadele", 2015);
-        styleList.add(style8);
+//        Coolpoint style = new Coolpoint("Cool", 2015);
+//        styleList.add(style);
+//        Coolpoint style1 = new Coolpoint("Cheap", 2015);
+//        styleList.add(style1);
+//        Coolpoint style2 = new Coolpoint("Expensive", 2015);
+//        styleList.add(style2);
+//        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
+//        styleList.add(style3);
+//        Coolpoint style4 = new Coolpoint("Nerds", 2015);
+//        styleList.add(style4);
+//        Coolpoint style5 = new Coolpoint("Shots", 2015);
+//        styleList.add(style5);
+//        Coolpoint style6 = new Coolpoint("Concert", 2015);
+//        styleList.add(style6);
+//        Coolpoint style7 = new Coolpoint("Lemne", 2015);
+//        styleList.add(style7);
+//        Coolpoint style8 = new Coolpoint("Acadele", 2015);
+//        styleList.add(style8);
 
 
 //       mAdapter.notifyDataSetChanged();
