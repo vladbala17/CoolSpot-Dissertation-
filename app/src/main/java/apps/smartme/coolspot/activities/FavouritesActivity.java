@@ -14,12 +14,12 @@ import java.util.List;
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.FavouriteAdapter;
 import apps.smartme.coolspot.adapters.RecyclerTouchListener;
-import apps.smartme.coolspot.domain.Style;
+import apps.smartme.coolspot.domain.Coolpoint;
 
 public class FavouritesActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
-    private List<Style> styleList = new ArrayList<>();
+    private List<Coolpoint> styleList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class FavouritesActivity extends AppCompatActivity {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Style style = styleList.get(position);
-                Toast.makeText(FavouritesActivity.this, style.getStyleName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Coolpoint style = styleList.get(position);
+                Toast.makeText(FavouritesActivity.this, style.getPointName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -48,23 +48,23 @@ public class FavouritesActivity extends AppCompatActivity {
 
     private void prepareStyleData() {
 
-        Style style = new Style("Cool", 2015);
+        Coolpoint style = new Coolpoint("Cool", 2015);
         styleList.add(style);
-        Style style1 = new Style("Cheap", 2015);
+        Coolpoint style1 = new Coolpoint("Cheap", 2015);
         styleList.add(style1);
-        Style style2 = new Style("Expensive", 2015);
+        Coolpoint style2 = new Coolpoint("Expensive", 2015);
         styleList.add(style2);
-        Style style3 = new Style("Cool girls", 2015);
+        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
         styleList.add(style3);
-        Style style4 = new Style("Nerds", 2015);
+        Coolpoint style4 = new Coolpoint("Nerds", 2015);
         styleList.add(style4);
-        Style style5 = new Style("Shots", 2015);
+        Coolpoint style5 = new Coolpoint("Shots", 2015);
         styleList.add(style5);
-        Style style6 = new Style("Concert", 2015);
+        Coolpoint style6 = new Coolpoint("Concert", 2015);
         styleList.add(style6);
-        Style style7 = new Style("Lemne", 2015);
+        Coolpoint style7 = new Coolpoint("Lemne", 2015);
         styleList.add(style7);
-        Style style8 = new Style("Acadele", 2015);
+        Coolpoint style8 = new Coolpoint("Acadele", 2015);
         styleList.add(style8);
 
 

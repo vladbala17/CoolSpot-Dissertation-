@@ -47,27 +47,42 @@
         android:id="@+id/styles_place_holder_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/styles_galery"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/first_style_iv"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
+            android:id="@+id/iv_coolpoint1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_weight="0.5"
-            android:background="#77020000" />
+            android:layout_weight="0.25"
+            android:src="@drawable/ic_recommendation" />
+
+        <TextView
+            android:id="@+id/tv_coolpoint1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:text="coolpoint1" />
 
         <ImageView
-            android:id="@+id/second_style_iv"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
+            android:id="@+id/iv_coolpoint2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="0.5"
-            android:background="#77020000" />
+            android:layout_weight="0.25"
+            android:src="@drawable/ic_recommendation" />
+
+        <TextView
+            android:id="@+id/tv_coolpoint2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:text="coolpoint2" />
     </LinearLayout>
 
     <LinearLayout

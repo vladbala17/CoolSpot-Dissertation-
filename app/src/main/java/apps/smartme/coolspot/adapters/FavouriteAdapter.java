@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import apps.smartme.coolspot.R;
-import apps.smartme.coolspot.domain.Style;
+import apps.smartme.coolspot.domain.Coolpoint;
 
 /**
  * Created by vlad on 15.05.2017.
  */
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyViewHolder> {
-    private List<Style> styleList;
-    private ArrayList<Style> arraylist;
+    private List<Coolpoint> styleList;
+    private ArrayList<Coolpoint> arraylist;
 
-    public FavouriteAdapter(List<Style> styleList) {
+    public FavouriteAdapter(List<Coolpoint> styleList) {
         this.styleList = styleList;
-        this.arraylist = new ArrayList<Style>();
+        this.arraylist = new ArrayList<Coolpoint>();
         this.arraylist.addAll(styleList);
     }
 
@@ -36,7 +36,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
 
     @Override
     public void onBindViewHolder(FavouriteAdapter.MyViewHolder holder, int position) {
-        Style style = styleList.get(position);
+        Coolpoint style = styleList.get(position);
         holder.image.setImageResource(R.drawable.ic_dance);
     }
 

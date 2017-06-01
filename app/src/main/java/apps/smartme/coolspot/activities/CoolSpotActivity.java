@@ -16,8 +16,12 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.squareup.picasso.Picasso;
 
 import apps.smartme.coolspot.CoolSpotMapFragment;
@@ -28,6 +32,7 @@ import apps.smartme.coolspot.R;
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "CoolSpotActivity";
+    private ImageButton logoutButton;
     String userID;
 
 
@@ -59,6 +64,17 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
         ImageView profilePictureView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
         Picasso.with(this).load("https://graph.facebook.com/" + userID + "/picture").into(profilePictureView);
+        logoutButton = (ImageButton) navigationView.getHeaderView(0).findViewById(R.id.btn_logout);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logOut();
+                AccessToken.setCurrentAccessToken(null);
+                Intent intent = new Intent(CoolSpotActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
         changeTypeface(navigationView);

@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.Locale;
 
 import apps.smartme.coolspot.R;
-import apps.smartme.coolspot.domain.Style;
+import apps.smartme.coolspot.domain.Coolpoint;
 
 /**
  * Created by vlad on 09.05.2017.
  */
 
 public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.MyViewHolder> {
-    private List<Style> styleList;
-    private ArrayList<Style> arraylist;
+    private List<Coolpoint> styleList;
+    private ArrayList<Coolpoint> arraylist;
 
-    public StyleDialogAdapter(List<Style> styleList) {
+    public StyleDialogAdapter(List<Coolpoint> styleList) {
         this.styleList = styleList;
-        this.arraylist = new ArrayList<Style>();
+        this.arraylist = new ArrayList<Coolpoint>();
         this.arraylist.addAll(styleList);
     }
 
@@ -38,8 +38,8 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
 
     @Override
     public void onBindViewHolder(StyleDialogAdapter.MyViewHolder holder, int position) {
-        Style style = styleList.get(position);
-        holder.title.setText(style.getStyleName());
+        Coolpoint style = styleList.get(position);
+        holder.title.setText(style.getPointName());
         holder.image.setImageResource(R.drawable.ic_dance);
     }
 
@@ -65,8 +65,8 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
         if (charText.length() == 0) {
             styleList.addAll(arraylist);
         } else {
-            for (Style style : arraylist) {
-                if (style.getStyleName().toLowerCase(Locale.getDefault()).contains(charText)) {
+            for (Coolpoint style : arraylist) {
+                if (style.getPointName().toLowerCase(Locale.getDefault()).contains(charText)) {
                     styleList.add(style);
                 }
             }

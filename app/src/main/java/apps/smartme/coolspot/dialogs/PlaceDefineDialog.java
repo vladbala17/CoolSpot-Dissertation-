@@ -2,13 +2,11 @@ package apps.smartme.coolspot.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +24,7 @@ import java.util.List;
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.RecyclerTouchListener;
 import apps.smartme.coolspot.adapters.StyleDialogAdapter;
-import apps.smartme.coolspot.domain.Style;
+import apps.smartme.coolspot.domain.Coolpoint;
 
 /**
  * Created by vlad on 09.05.2017.
@@ -34,26 +32,29 @@ import apps.smartme.coolspot.domain.Style;
 
 public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
     public static final String PLACE_NAME = "place_name";
-    private List<Style> styleList = new ArrayList<>();
+    public static final String SELECTED_ITEM_POSITION = "selected_item_position";
+    private List<Coolpoint> styleList = new ArrayList<>();
     private RecyclerView recyclerView;
     SearchView searchView;
     private StyleDialogAdapter mAdapter;
     private TextView placeDefineTextView;
     private Button markPlaceButton;
 
-    public static PlaceDefineDialog newInstance(String placeName) {
+    public static PlaceDefineDialog newInstance(String placeName, int position) {
         PlaceDefineDialog t = new PlaceDefineDialog();
         Bundle args = new Bundle();
         args.putString(PLACE_NAME, placeName);
+        args.putInt(SELECTED_ITEM_POSITION, position);
         t.setArguments(args);
         return t;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.custom_place_define_dialog, null, false);
         String placeDefineTitle = getArguments().getString(PLACE_NAME);
+        final int position = getArguments().getInt(SELECTED_ITEM_POSITION);
         prepareStyleData();
         placeDefineTextView = (TextView) v.findViewById(R.id.place_define_name);
         placeDefineTextView.setText(placeDefineTitle);
@@ -61,7 +62,8 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
         markPlaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+                Intent intent = getActivity().getIntent();
+                intent.putExtra(SELECTED_ITEM_POSITION, position);
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
                 getDialog().dismiss();
             }
@@ -76,8 +78,8 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Style style = styleList.get(position);
-                Toast.makeText(getContext(), style.getStyleName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Coolpoint style = styleList.get(position);
+                Toast.makeText(getContext(), style.getPointName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -112,19 +114,19 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
 
 
     private void prepareStyleData() {
-        Style style = new Style("Cool", 2015);
+        Coolpoint style = new Coolpoint("Cool", 2015);
         styleList.add(style);
-        Style style1 = new Style("Cheap", 2015);
+        Coolpoint style1 = new Coolpoint("Cheap", 2015);
         styleList.add(style1);
-        Style style2 = new Style("Expensive", 2015);
+        Coolpoint style2 = new Coolpoint("Expensive", 2015);
         styleList.add(style2);
-        Style style3 = new Style("Cool girls", 2015);
+        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
         styleList.add(style3);
-        Style style4 = new Style("Nerds", 2015);
+        Coolpoint style4 = new Coolpoint("Nerds", 2015);
         styleList.add(style4);
-        Style style5 = new Style("Shots", 2015);
+        Coolpoint style5 = new Coolpoint("Shots", 2015);
         styleList.add(style5);
-        Style style6 = new Style("Concert", 2015);
+        Coolpoint style6 = new Coolpoint("Concert", 2015);
         styleList.add(style6);
 
 

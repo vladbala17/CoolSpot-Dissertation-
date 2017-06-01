@@ -1,7 +1,6 @@
 package apps.smartme.coolspot;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -15,12 +14,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -50,10 +47,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import apps.smartme.coolspot.activities.CoolSpotActivity;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
 import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
+import apps.smartme.coolspot.domain.CoolspotLocation;
 
 /**
  * Created by vlad on 26.03.2017.
@@ -70,11 +72,15 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
 
 
+    List<CoolspotLocation> coolspotLocations = new ArrayList<CoolspotLocation>();
+    ImageButton recommendButton;
+
+
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
     LocationRequest mLocationRequest;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 13;
     LatLng latLng;
 
     GoogleMap mMap;
@@ -90,11 +96,22 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
-    public static final String SELECTED_ITEM = "selected_item";
+    public static final String SELECTED_ITEM_POSITION = "selected_item_position";
+    public static final String SELECTED_ITEM_NAME = "selected_item_name";
+
+
+    public static CoolSpotMapFragment newInstance(List<CoolspotLocation> list) {
+
+        Bundle args = new Bundle();
+        CoolSpotMapFragment fragment = new CoolSpotMapFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
@@ -103,14 +120,46 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("CoolspotLocation");
+        ref.addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        Map<String, Object> objectMap = (HashMap<String, Object>)
+                                dataSnapshot.getValue();
+                        for (Object obj : objectMap.values()) {
+                            if (obj instanceof Map) {
+                                Map<String, Object> mapObj = (Map<String, Object>) obj;
+                                CoolspotLocation match = new CoolspotLocation();
+                                match.setName((String) mapObj.get("name"));
+                                match.setLatitude((double) mapObj.get("latitude"));
+                                match.setLongitude((double) mapObj.get("longitude"));
+                                coolspotLocations.add(match);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
+                    }
+                });
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
 
     }
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View view = layoutInflater.inflate(R.layout.map_fragment, viewGroup, false);
-        ImageButton imageButton = (ImageButton) view.findViewById(R.id.recommend_btn);
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        recommendButton = (ImageButton) view.findViewById(R.id.recommend_btn);
+        recommendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
@@ -150,18 +199,18 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                             getContext(), R.raw.style_map));
 
             if (!success) {
-                Log.e(TAG, "Style parsing failed.");
+                Log.e(TAG, "Coolpoint parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
 
-
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
-        // getDeviceLocation();
+        getDeviceLocation();
+
 
     }
 
@@ -210,6 +259,17 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             mLastKnownLocation = null;
 
         }
+
+    }
+
+    private void putLocationsOnMap(List<CoolspotLocation> coolspotLocations){
+        for (CoolspotLocation coolspotLocation : coolspotLocations) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolspotLocation.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dance))
+                    .position(new LatLng(coolspotLocation.getLatitude(), coolspotLocation.getLongitude())));
+
+        }
     }
 
 
@@ -249,10 +309,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "Current location is null. Using defaults.");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
     }
 
@@ -281,13 +337,17 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 //            currLocationMarker = mGoogleMap.addMarker(markerOptions);
         }
 
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000); //5 seconds
-        mLocationRequest.setFastestInterval(3000); //3 seconds
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+//        mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(5000); //5 seconds
+//        mLocationRequest.setFastestInterval(3000); //3 seconds
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
+//
+//        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        putLocationsOnMap(coolspotLocations);
 
     }
 
@@ -302,7 +362,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
+     * Prompts the user to select the current place from a coolspotLocations of likely places, and shows the
      * current place on the map - provided the user has granted location permission.
      */
     private void showCurrentPlace() {
@@ -326,7 +386,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     mLikelyPlaceAttributions = new String[mMaxEntries];
                     mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        // Build a list of likely places to show the user. Max 5.
+                        // Build a coolspotLocations of likely places to show the user. Max 5.
                         mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
                         mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
                         mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
@@ -341,78 +401,30 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     // Release the place likelihood buffer, to avoid memory leaks.
                     likelyPlaces.release();
 
-                    // Show a dialog offering the user the list of likely places, and add a
+                    // Show a dialog offering the user the coolspotLocations of likely places, and add a
                     // marker at the selected place.
                     openSuggestedPlacesDialog();
                 }
             });
-        } else {
-            // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
         }
     }
 
     private void openSuggestedPlacesDialog() {
-
-//        DialogInterface.OnClickListener listener =
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // The "which" argument contains the position of the selected item.
-//                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-//                        String markerSnippet = mLikelyPlaceAddresses[which];
-//                        if (mLikelyPlaceAttributions[which] != null) {
-//                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-//                        }
-//                        // Add a marker for the selected place, with an info window
-//                        // showing information about that place.
-//                        mMap.addMarker(new MarkerOptions()
-//                                .title(mLikelyPlaceNames[which])
-//                                .position(markerLatLng)
-//                                .snippet(markerSnippet));
-//
-//                        // Position the map's camera at the location of the marker.
-//                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-//                                DEFAULT_ZOOM));
-//                    }
-//                };
-//
-//
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
-//
-//                return false;
-//            }
-//        });
-
-        //  Display the dialog.
-//        AlertDialog dialog = new AlertDialog.Builder(getContext())
-//                .setTitle(R.string.pick_place)
-//                .setItems(mLikelyPlaceNames, listener)
-//                .show();
-
-        //PlacePickerDialog.newInstance(mLikelyPlaceNames).show(getActivity().getSupportFragmentManager(), "placePicker");
         PlacePickerDialog placePickerDialog = PlacePickerDialog.newInstance(mLikelyPlaceNames);
         placePickerDialog.setTargetFragment(this, PLACE_PICKER_DIALOG);
         placePickerDialog.show(getActivity().getSupportFragmentManager(), "placePicker");
-//        PlaceDefineDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDefine");
-//        PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int position = data.getIntExtra(SELECTED_ITEM, 0);
-        String selectedItemName = data.getStringExtra(SELECTED_ITEM);
+        final String selectedItemName = data.getStringExtra(SELECTED_ITEM_NAME);
+        final int position = data.getIntExtra(SELECTED_ITEM_POSITION, 0);
+        Log.d(TAG, "//////////////////////" + position + "//////////////");
         switch (requestCode) {
             case PLACE_PICKER_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
                     // After Ok code.
-                    PlaceDefineDialog placeDefineDialog = PlaceDefineDialog.newInstance(selectedItemName);
+                    PlaceDefineDialog placeDefineDialog = PlaceDefineDialog.newInstance(selectedItemName, position);
                     placeDefineDialog.setTargetFragment(this, PLACE_DEFINE_DIALOG);
                     placeDefineDialog.show(getActivity().getSupportFragmentManager(), "placeDefine");
                 } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -443,7 +455,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            PlaceDetailsDialog.newInstance().show(getActivity().getSupportFragmentManager(), "placeDetails");
+                            PlaceDetailsDialog.newInstance(mLikelyPlaceNames[position]).show(getActivity().getSupportFragmentManager(), "placeDetails");
 
                             return false;
                         }
@@ -473,7 +485,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         //zoom to current position:
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-
         //If you only need one location, unregister the listener
         //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 

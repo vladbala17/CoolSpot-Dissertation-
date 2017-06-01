@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,10 +20,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import apps.smartme.coolspot.activities.CoolSpotActivity;
+import apps.smartme.coolspot.R;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -35,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
         LoginButton mLoginButton = (LoginButton) findViewById(R.id.login_button);
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
 
+                userId = loginResult.getAccessToken().getUserId();
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -63,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         // [START_EXCLUDE silent]
         // [END_EXCLUDE]
-        userId = token.getUserId();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -93,11 +93,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mAuth.getCurrentUser() != null) {
-            Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
-            loginIntent.putExtra("userId", userId);
-            startActivity(loginIntent);
-        }
+
     }
 
     @Override
@@ -108,11 +104,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAuth.getCurrentUser() != null) {
-            Intent loginIntent = new Intent(LoginActivity.this, CoolSpotActivity.class);
-            loginIntent.putExtra("userId", userId);
-            startActivity(loginIntent);
-        }
+
     }
 
 }

@@ -5,7 +5,7 @@
     android:background="@drawable/login_back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="apps.smartme.coolspot.LoginActivity">
+    tools:context="apps.smartme.coolspot.activities.LoginActivity">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
