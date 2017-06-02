@@ -77,7 +77,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     ChildEventListener coolPointChildEventListener;
 
 
-    List<CoolspotLocation> coolspotLocations = new ArrayList<>();
     List<Coolpoint> coolpointDrinkList = new ArrayList<>();
     List<Coolpoint> coolpointFunList = new ArrayList<>();
     List<Coolpoint> coolpointGirlsList = new ArrayList<>();
@@ -138,10 +137,11 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d(TAG, "onStart");
         ChildEventListener childEventCoolspotListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "====FIREBASE IN ACTION======");
                 switch (dataSnapshot.getKey()) {
                     case "drink":
                         collectDrinkCoolSpots((Map<String, Object>) dataSnapshot.getValue());
@@ -190,6 +190,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
             coolpoint.setCount((long) singleCoolPoint.get("count"));
             coolpointDrinkList.add(coolpoint);
+            Log.d(TAG, "list1 is loaded");
         }
     }
 
@@ -203,6 +204,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
             coolpoint.setCount((long) singleCoolPoint.get("count"));
             coolpointGirlsList.add(coolpoint);
+            Log.d(TAG, "list2 is loaded");
         }
     }
 
@@ -216,9 +218,60 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
             coolpoint.setCount((long) singleCoolPoint.get("count"));
             coolpointFunList.add(coolpoint);
+            Log.d(TAG, "list3 is loaded");
         }
     }
 
+    private void populateMapWithLocations() {
+        Log.d(TAG, "HERE THE LIST SHOULD BE POPULATED");
+        populateGirlsFilter();
+        populateFunFilter();
+        populateDrinkFilter();
+
+    }
+
+    private void populateDrinkFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointDrink : coolpointDrinkList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointDrink.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_drinks))
+                    .position(new LatLng(coolpointDrink.getLatitude(), coolpointDrink.getLongitude())));
+            Log.d(TAG, "DRINK PLACE ADDED");
+        }
+    }
+
+    private void populateFunFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointFun : coolpointFunList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointFun.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
+                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
+            Log.d(TAG, "FUN PLACE ADDED");
+        }
+    }
+
+    public void populateGirlsFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointGirls : coolpointGirlsList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointGirls.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
+                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
+            Log.d(TAG, "GIRLS PLACE ADDED");
+        }
+    }
+
+    public void populateMapWithFilter(String filter) {
+        if (filter.equals("girls")) {
+            populateGirlsFilter();
+        }else if (filter.equals("fun")){
+            populateFunFilter();
+        }else if(filter.equals("drink")){
+            populateDrinkFilter();
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -263,6 +316,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "HERE THE MAP IS READY");
         mMap = googleMap;
         //  mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         try {
@@ -285,7 +339,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-
     }
 
     /**
@@ -307,6 +360,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void updateLocationUI() {
+        Log.d(TAG, "THE LOCATION SHOULD BE UPDATED");
         if (mMap == null) {
             return;
         }
@@ -334,16 +388,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
-    }
-
-    private void putLocationsOnMap(List<CoolspotLocation> coolspotLocations) {
-        for (CoolspotLocation coolspotLocation : coolspotLocations) {
-            mMap.addMarker(new MarkerOptions()
-                    .title(coolspotLocation.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dance))
-                    .position(new LatLng(coolspotLocation.getLatitude(), coolspotLocation.getLongitude())));
-
-        }
     }
 
 
@@ -388,6 +432,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "MAP IS CONNECTEDDDDDD");
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -398,6 +443,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         Toast.makeText(getActivity(), "onConnected", Toast.LENGTH_SHORT).show();
+
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
@@ -443,7 +489,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         if (mMap == null) {
             return;
         }
-
+        populateMapWithLocations();
 
         if (mLocationPermissionGranted) {
             // Get the likely places - that is, the businesses and other points of interest that

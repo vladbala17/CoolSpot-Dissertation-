@@ -3,19 +3,15 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_fav_places"
             android:icon="@drawable/ic_favourites"
             android:title="Favorites" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_history_places"
             android:icon="@drawable/ic_history"
             android:title="History" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_syncfacebook"
-            android:title="Sync with facebook" />
-        <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_settings"
             android:icon="@drawable/ic_preferences"
             android:title="Preferences" />
     </group>
@@ -23,11 +19,11 @@
     <item android:title="Special">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_get_premium"
                 android:icon="@drawable/ic_premium"
                 android:title="Get premium" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_rate_app"
                 android:icon="@drawable/ic_rating"
                 android:title="Rate the app" />
         </menu>

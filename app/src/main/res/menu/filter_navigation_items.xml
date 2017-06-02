@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/shuttle_filter"
-        android:icon="@drawable/ic_arts"
-        android:title="shuttle"/>
+        android:id="@+id/drink_filter"
+        android:icon="@drawable/ic_free_drinks"
+        android:title="drink" />
 
     <item
-        android:id="@+id/dashboard_filter"
-        android:icon="@drawable/ic_bored"
-        android:title="dasboard"/>
+        android:id="@+id/fun_filter"
+        android:icon="@drawable/ic_free_entrance"
+        android:title="fun" />
 
     <item
-        android:id="@+id/favorite_filter"
+        android:id="@+id/girls_filter"
         android:icon="@drawable/ic_girls"
-        android:title="favorite"/>
+        android:title="girls" />
 
     <item
-        android:id="@+id/takeoff_filter"
+        android:id="@+id/boys_filter"
         android:icon="@drawable/ic_boys"
-        android:title="takeoff"/>
+        android:title="boys" />
 
 </menu>

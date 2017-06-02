@@ -29,10 +29,11 @@ import apps.smartme.coolspot.CustomTypefaceSpan;
 import apps.smartme.coolspot.FontTypeface;
 import apps.smartme.coolspot.R;
 
-public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "CoolSpotActivity";
     private ImageButton logoutButton;
+    CoolSpotMapFragment coolSpotMapFragment;
     String userID;
 
 
@@ -55,6 +56,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         Log.d(TAG, "============================" + userID + "===================");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.getMenu().getItem(3).setChecked(true);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -76,9 +79,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-
+        coolSpotMapFragment = new CoolSpotMapFragment();
         changeTypeface(navigationView);
-        CoolSpotMapFragment coolSpotMapFragment = new CoolSpotMapFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.map_fragment_container, coolSpotMapFragment).commit();
@@ -113,27 +115,23 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
 
         MenuItem item;
 
-        item = navigationView.getMenu().findItem(R.id.nav_camera);
+        item = navigationView.getMenu().findItem(R.id.nav_fav_places);
         item.setTitle("Favorites");
         applyFontToItem(item, typeface);
 
-        item = navigationView.getMenu().findItem(R.id.nav_gallery);
+        item = navigationView.getMenu().findItem(R.id.nav_history_places);
         item.setTitle("History");
         applyFontToItem(item, typeface);
 
-        item = navigationView.getMenu().findItem(R.id.nav_slideshow);
-        item.setTitle("Sync with facebook");
-        applyFontToItem(item, typeface);
-
-        item = navigationView.getMenu().findItem(R.id.nav_manage);
+        item = navigationView.getMenu().findItem(R.id.nav_settings);
         item.setTitle("Preferences");
         applyFontToItem(item, typeface);
 
-        item = navigationView.getMenu().findItem(R.id.nav_share);
+        item = navigationView.getMenu().findItem(R.id.nav_get_premium);
         item.setTitle("Get premium");
         applyFontToItem(item, typeface);
 
-        item = navigationView.getMenu().findItem(R.id.nav_send);
+        item = navigationView.getMenu().findItem(R.id.nav_rate_app);
         item.setTitle("Rate the app");
         applyFontToItem(item, typeface);
     }
@@ -141,21 +139,30 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            Intent intent = new Intent(this, FavouritesActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (item.getItemId()) {
+            case R.id.nav_fav_places:
+                Intent intent = new Intent(this, FavouritesActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_history_places:
+                break;
+            case R.id.nav_settings:
+                break;
+            case R.id.nav_get_premium:
+                break;
+            case R.id.nav_rate_app:
+                break;
+            case R.id.boys_filter:
+                break;
+            case R.id.girls_filter:
+                coolSpotMapFragment.populateMapWithFilter("girls");
+                break;
+            case R.id.fun_filter:
+                coolSpotMapFragment.populateMapWithFilter("fun");
+                break;
+            case R.id.drink_filter:
+                coolSpotMapFragment.populateMapWithFilter("drink");
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
