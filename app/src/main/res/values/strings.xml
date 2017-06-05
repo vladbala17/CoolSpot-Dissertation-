@@ -9,4 +9,6 @@
     <string name="fb_login_protocol_scheme">fb1404000559670365</string>
     <string name="signin">intra</string>
     <string name="cancel">pleaca</string>
+    <string name="search">search coolpoint</string>
+    <string name="search_title">Search</string>
 </resources>

@@ -46,6 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     //Firebase
     DatabaseReference databaseReference;
     DatabaseReference coolPointReference;
+    DatabaseReference populateMapReference;
+    ValueEventListener mapValueEventListener;
     ChildEventListener coolPointChildEventListener;
 
 
@@ -87,7 +90,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private CameraPosition mCameraPosition;
     LocationRequest mLocationRequest;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 13;
+    private static final int DEFAULT_ZOOM = 12;
     LatLng latLng;
 
     GoogleMap mMap;
@@ -130,14 +133,34 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         coolPointReference = databaseReference.child("Coolpoint");
-
-
+        populateMapReference = databaseReference.child("Coolpoint");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
+        getCoolspotsFromFirebase();
+        populateMapWithCoolspots();
+    }
+
+    private void populateMapWithCoolspots() {
+        ValueEventListener populateMapValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                populateMapWithLocations();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        populateMapReference.addValueEventListener(populateMapValueEventListener);
+        mapValueEventListener = populateMapValueEventListener;
+    }
+
+    private void getCoolspotsFromFirebase() {
         ChildEventListener childEventCoolspotListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -177,100 +200,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         };
         coolPointReference.addChildEventListener(childEventCoolspotListener);
         coolPointChildEventListener = childEventCoolspotListener;
-
-    }
-
-    private void collectDrinkCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointDrinkList.add(coolpoint);
-            Log.d(TAG, "list1 is loaded");
-        }
-    }
-
-    private void collectGirlsCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointGirlsList.add(coolpoint);
-            Log.d(TAG, "list2 is loaded");
-        }
-    }
-
-    private void collectFunCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointFunList.add(coolpoint);
-            Log.d(TAG, "list3 is loaded");
-        }
-    }
-
-    private void populateMapWithLocations() {
-        Log.d(TAG, "HERE THE LIST SHOULD BE POPULATED");
-        populateGirlsFilter();
-        populateFunFilter();
-        populateDrinkFilter();
-
-    }
-
-    private void populateDrinkFilter() {
-        mMap.clear();
-        for (Coolpoint coolpointDrink : coolpointDrinkList) {
-            mMap.addMarker(new MarkerOptions()
-                    .title(coolpointDrink.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_drinks))
-                    .position(new LatLng(coolpointDrink.getLatitude(), coolpointDrink.getLongitude())));
-            Log.d(TAG, "DRINK PLACE ADDED");
-        }
-    }
-
-    private void populateFunFilter() {
-        mMap.clear();
-        for (Coolpoint coolpointFun : coolpointFunList) {
-            mMap.addMarker(new MarkerOptions()
-                    .title(coolpointFun.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
-                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
-            Log.d(TAG, "FUN PLACE ADDED");
-        }
-    }
-
-    public void populateGirlsFilter() {
-        mMap.clear();
-        for (Coolpoint coolpointGirls : coolpointGirlsList) {
-            mMap.addMarker(new MarkerOptions()
-                    .title(coolpointGirls.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
-                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
-            Log.d(TAG, "GIRLS PLACE ADDED");
-        }
-    }
-
-    public void populateMapWithFilter(String filter) {
-        if (filter.equals("girls")) {
-            populateGirlsFilter();
-        }else if (filter.equals("fun")){
-            populateFunFilter();
-        }else if(filter.equals("drink")){
-            populateDrinkFilter();
-        }
     }
 
     @Override
@@ -279,6 +208,9 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         if (coolPointChildEventListener != null) {
             coolPointReference.removeEventListener(coolPointChildEventListener);
+        }
+        if (mapValueEventListener != null) {
+            populateMapReference.removeEventListener(mapValueEventListener);
         }
     }
 
@@ -310,13 +242,12 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         });
-
         return view;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "HERE THE MAP IS READY");
+        Log.d(TAG, "onMapReady()");
         mMap = googleMap;
         //  mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         try {
@@ -360,7 +291,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void updateLocationUI() {
-        Log.d(TAG, "THE LOCATION SHOULD BE UPDATED");
+        Log.d(TAG, "updateLocationUI");
         if (mMap == null) {
             return;
         }
@@ -432,7 +363,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d(TAG, "MAP IS CONNECTEDDDDDD");
+        Log.d(TAG, "onConnected()");
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -489,7 +420,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         if (mMap == null) {
             return;
         }
-        populateMapWithLocations();
 
         if (mLocationPermissionGranted) {
             // Get the likely places - that is, the businesses and other points of interest that
@@ -528,6 +458,144 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             });
         }
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged()");
+        //place marker at current position
+        //mGoogleMap.clear();
+//        if (currLocationMarker != null) {
+//            currLocationMarker.remove();
+//        }
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Position");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//        currLocationMarker = mGoogleMap.addMarker(markerOptions);
+//
+//        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
+
+        //zoom to current position:
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        //If you only need one location, unregister the listener
+        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+
+    }
+
+    private void collectDrinkCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointDrinkList.add(coolpoint);
+            Log.d(TAG, "list1 is loaded");
+        }
+    }
+
+    private void collectGirlsCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointGirlsList.add(coolpoint);
+            Log.d(TAG, "list2 is loaded");
+        }
+    }
+
+    private void collectFunCoolSpots(Map<String, Object> drinkCoolspots) {
+
+        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
+            Map singleCoolPoint = (Map) entry.getValue();
+            Coolpoint coolpoint = new Coolpoint();
+            coolpoint.setName((String) singleCoolPoint.get("name"));
+            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
+            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
+            coolpoint.setCount((long) singleCoolPoint.get("count"));
+            coolpointFunList.add(coolpoint);
+            Log.d(TAG, "list3 is loaded");
+        }
+    }
+
+    public void populateMapWithLocations() {
+        Log.d(TAG, "populateMapWithLocations");
+        for (Coolpoint coolpointDrink : coolpointDrinkList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointDrink.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_drinks))
+                    .position(new LatLng(coolpointDrink.getLatitude(), coolpointDrink.getLongitude())));
+            Log.d(TAG, "DRINK PLACE ADDED");
+        }
+
+        for (Coolpoint coolpointFun : coolpointFunList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointFun.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
+                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
+            Log.d(TAG, "FUN PLACE ADDED");
+        }
+
+        for (Coolpoint coolpointGirls : coolpointGirlsList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointGirls.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
+                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
+            Log.d(TAG, "GIRLS PLACE ADDED");
+        }
+
+    }
+
+    public void populateDrinkFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointDrink : coolpointDrinkList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointDrink.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_drinks))
+                    .position(new LatLng(coolpointDrink.getLatitude(), coolpointDrink.getLongitude())));
+            Log.d(TAG, "DRINK PLACE ADDED");
+        }
+    }
+
+    private void populateFunFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointFun : coolpointFunList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointFun.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
+                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
+            Log.d(TAG, "FUN PLACE ADDED");
+        }
+    }
+
+    public void populateGirlsFilter() {
+        mMap.clear();
+        for (Coolpoint coolpointGirls : coolpointGirlsList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointGirls.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
+                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
+            Log.d(TAG, "GIRLS PLACE ADDED");
+        }
+    }
+
+    public void populateMapWithFilter(String filter) {
+        if (filter.equals("girls")) {
+            populateGirlsFilter();
+        } else if (filter.equals("fun")) {
+            populateFunFilter();
+        } else if (filter.equals("drink")) {
+            populateDrinkFilter();
+        }
+    }
+
 
     private void openSuggestedPlacesDialog() {
         PlacePickerDialog placePickerDialog = PlacePickerDialog.newInstance(mLikelyPlaceNames);
@@ -587,28 +655,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        //place marker at current position
-        //mGoogleMap.clear();
-//        if (currLocationMarker != null) {
-//            currLocationMarker.remove();
-//        }
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("Current Position");
-//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//        currLocationMarker = mGoogleMap.addMarker(markerOptions);
-//
-//        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
-
-        //zoom to current position:
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-        //If you only need one location, unregister the listener
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-
-    }
 
     private void setPlaceMarkerOnTheMap(int requestCode) {
         switch (requestCode) {
