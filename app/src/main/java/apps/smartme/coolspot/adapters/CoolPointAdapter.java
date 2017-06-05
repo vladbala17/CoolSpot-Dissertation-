@@ -25,12 +25,12 @@ import apps.smartme.coolspot.domain.Coolpoint;
 
 public class CoolPointAdapter extends CursorAdapter {
 
-    private List<Coolpoint> items;
+    private List<String> items;
 
     private TextView text;
     private ImageView image;
 
-    public CoolPointAdapter(Context context, Cursor cursor, List<Coolpoint> items) {
+    public CoolPointAdapter(Context context, Cursor cursor, List<String> items) {
 
         super(context, cursor, false);
 
@@ -40,8 +40,18 @@ public class CoolPointAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        text.setText(items.get(cursor.getPosition()).getName());
-        image.setImageResource(R.drawable.ic_dance);
+        text.setText(items.get(cursor.getPosition()));
+        switch (items.get(cursor.getPosition())) {
+            case "drink":
+                image.setImageResource(R.drawable.ic_free_drinks);
+                break;
+            case "fun":
+                image.setImageResource(R.drawable.ic_free_entrance);
+                break;
+            case "girls":
+                image.setImageResource(R.drawable.ic_girls);
+                break;
+        }
     }
 
     @Override

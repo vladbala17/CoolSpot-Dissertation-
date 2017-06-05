@@ -27,11 +27,17 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import apps.smartme.coolspot.CoolSpotMapFragment;
 import apps.smartme.coolspot.CustomTypefaceSpan;
@@ -47,21 +53,22 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     CoolSpotMapFragment coolSpotMapFragment;
     SearchManager manager;
     SearchView coolPointSearchView;
-    List<Coolpoint> coolpointList = new ArrayList<>();
-    List<Coolpoint> arraylist = new ArrayList<>();
+    List<String> coolpointList = new ArrayList<>();
+    List<String> arraylist = new ArrayList<>();
     String userID;
 
+    DatabaseReference databaseReference;
+    DatabaseReference coolPointReference;
+    ChildEventListener coolPointChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cool_spot);
-        coolpointList.add(new Coolpoint(1, "Drink", 44, 55));
-        coolpointList.add(new Coolpoint(2, "Girls", 44, 55));
-        coolpointList.add(new Coolpoint(3, "Fun", 44, 55));
-        coolpointList.add(new Coolpoint(4, "Cheap", 44, 55));
-        coolpointList.add(new Coolpoint(5, "Boys", 44, 55));
-        arraylist.addAll(coolpointList);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        coolPointReference = databaseReference.child("Coolpoint");
+
         coolPointSearchView = (SearchView) findViewById(R.id.sv_coolpoint);
         coolPointSearchView.setOnQueryTextListener(this);
         coolPointSearchView.setOnSuggestionListener(this);
@@ -128,6 +135,37 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onStart() {
         super.onStart();
+        ChildEventListener childEventCoolspotListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "====FIREBASE IN ACTION======");
+                coolpointList.add(dataSnapshot.getKey());
+                arraylist.add(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointReference.addChildEventListener(childEventCoolspotListener);
+        coolPointChildEventListener = childEventCoolspotListener;
+
     }
 
     private void applyFontToItem(MenuItem item, Typeface font) {
@@ -214,8 +252,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         if (newText.length() == 0) {
             coolpointList.addAll(arraylist);
         } else {
-            for (Coolpoint style : arraylist) {
-                if (style.getName().toLowerCase(Locale.getDefault()).contains(newText)) {
+            for (String style : arraylist) {
+                if (style.toLowerCase(Locale.getDefault()).contains(newText)) {
                     coolpointList.add(style);
                 }
             }
@@ -230,14 +268,10 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         Object[] temp = new Object[]{0, "default"};
         MatrixCursor cursor = new MatrixCursor(columns);
         for (int i = 0; i < coolpointList.size(); i++) {
-
             temp[0] = i;
-            temp[1] = coolpointList.get(i).getName();
-
+            temp[1] = coolpointList.get(i);
             cursor.addRow(temp);
-
         }
-
 
         CoolPointAdapter adapter = new CoolPointAdapter(this, cursor, coolpointList);
         coolPointSearchView.setSuggestionsAdapter(adapter);
@@ -254,14 +288,13 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         cursor.moveToPosition(position);
         String suggestion = cursor.getString(1);//1 is the index of col containing suggestion name.
         coolPointSearchView.setQuery(suggestion, true);//setting suggestion
-        Toast.makeText(CoolSpotActivity.this, suggestion, Toast.LENGTH_SHORT).show();
+        coolSpotMapFragment.populateMapWithFilter(suggestion);
         return true;
     }
 
     @Override
     public boolean onClose() {
-        Toast.makeText(CoolSpotActivity.this, "searchview cleared", Toast.LENGTH_SHORT).show();
-
+        coolSpotMapFragment.populateMapWithLocations();
         return false;
     }
 }
