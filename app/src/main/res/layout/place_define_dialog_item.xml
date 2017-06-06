@@ -21,6 +21,8 @@
         android:layout_below="@+id/display_image"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:background="@android:color/transparent"
         android:text="ABC" />
 </RelativeLayout>

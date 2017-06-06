@@ -19,12 +19,12 @@ import apps.smartme.coolspot.domain.Coolpoint;
  */
 
 public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.MyViewHolder> {
-    private List<Coolpoint> styleList;
-    private ArrayList<Coolpoint> arraylist;
+    private List<String> styleList;
+    private ArrayList<String> arraylist;
 
-    public StyleDialogAdapter(List<Coolpoint> styleList) {
+    public StyleDialogAdapter(List<String> styleList) {
         this.styleList = styleList;
-        this.arraylist = new ArrayList<Coolpoint>();
+        this.arraylist = new ArrayList<String>();
         this.arraylist.addAll(styleList);
     }
 
@@ -38,9 +38,16 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
 
     @Override
     public void onBindViewHolder(StyleDialogAdapter.MyViewHolder holder, int position) {
-        Coolpoint style = styleList.get(position);
-//        holder.title.setText(style.getPointName());
-//        holder.image.setImageResource(R.drawable.ic_dance);
+        String coolpoint = styleList.get(position);
+        holder.title.setText(coolpoint);
+        switch (coolpoint) {
+            case "cheap":
+                holder.image.setImageResource(R.drawable.ic_cheap);
+                break;
+            case "expensive":
+                holder.image.setImageResource(R.drawable.ic_expensive);
+                break;
+        }
     }
 
     @Override
@@ -60,17 +67,17 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
     }
 
     public void filter(String charText) {
-//        charText = charText.toLowerCase(Locale.getDefault());
-//        styleList.clear();
-//        if (charText.length() == 0) {
-//            styleList.addAll(arraylist);
-//        } else {
-//            for (Coolpoint style : arraylist) {
-//                if (style.getPointName().toLowerCase(Locale.getDefault()).contains(charText)) {
-//                    styleList.add(style);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
+        charText = charText.toLowerCase(Locale.getDefault());
+        styleList.clear();
+        if (charText.length() == 0) {
+            styleList.addAll(arraylist);
+        } else {
+            for (String coolpoint : arraylist) {
+                if (coolpoint.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    styleList.add(coolpoint);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

@@ -33,7 +33,7 @@ import apps.smartme.coolspot.domain.Coolpoint;
 public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
     public static final String PLACE_NAME = "place_name";
     public static final String SELECTED_ITEM_POSITION = "selected_item_position";
-    private List<Coolpoint> styleList = new ArrayList<>();
+    private List<String> styleList = new ArrayList<>();
     private RecyclerView recyclerView;
     SearchView searchView;
     private StyleDialogAdapter mAdapter;
@@ -78,7 +78,7 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Coolpoint style = styleList.get(position);
+//                Coolpoint style = styleList.get(position);
 //                Toast.makeText(getContext(), style.getPointName() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 

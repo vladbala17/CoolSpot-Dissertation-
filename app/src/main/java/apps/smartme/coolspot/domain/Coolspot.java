@@ -6,16 +6,14 @@ package apps.smartme.coolspot.domain;
 
 public class Coolspot {
     private String name;
-    private String Latitude;
-    private String Longitude;
-    private String Poplarity;
-    private String Timestamp;
 
-    public Coolspot(String name, String latitude, String longitude, String poplarity, String timestamp) {
+    private long popularity;
+    private long Timestamp;
+
+    public Coolspot(String name, long popularity, long timestamp) {
         this.name = name;
-        Latitude = latitude;
-        Longitude = longitude;
-        Poplarity = poplarity;
+
+        this.popularity = popularity;
         Timestamp = timestamp;
     }
 
@@ -30,35 +28,19 @@ public class Coolspot {
         this.name = name;
     }
 
-    public String getLatitude() {
-        return Latitude;
+    public long getPopularity() {
+        return popularity;
     }
 
-    public void setLatitude(String latitude) {
-        Latitude = latitude;
+    public void setPopularity(long popularity) {
+        this.popularity = popularity;
     }
 
-    public String getLongitude() {
-        return Longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        Longitude = longitude;
-    }
-
-    public String getPoplarity() {
-        return Poplarity;
-    }
-
-    public void setPoplarity(String poplarity) {
-        Poplarity = poplarity;
-    }
-
-    public String getTimestamp() {
+    public long getTimestamp() {
         return Timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         Timestamp = timestamp;
     }
 }

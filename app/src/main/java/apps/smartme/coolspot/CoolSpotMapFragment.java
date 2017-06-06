@@ -56,6 +56,7 @@ import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
 import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
 import apps.smartme.coolspot.domain.Coolpoint;
+import apps.smartme.coolspot.domain.Coolspot;
 import apps.smartme.coolspot.domain.CoolspotLocation;
 
 /**
@@ -63,7 +64,7 @@ import apps.smartme.coolspot.domain.CoolspotLocation;
  */
 
 public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
 
@@ -76,6 +77,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     DatabaseReference databaseReference;
     DatabaseReference coolPointReference;
     DatabaseReference populateMapReference;
+    DatabaseReference coolSpotReference;
+    ValueEventListener coolSpotValueEventListener;
     ValueEventListener mapValueEventListener;
     ChildEventListener coolPointChildEventListener;
 
@@ -211,6 +214,10 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
         if (mapValueEventListener != null) {
             populateMapReference.removeEventListener(mapValueEventListener);
+        }
+
+        if (coolSpotValueEventListener != null) {
+            coolSpotReference.removeEventListener(coolSpotValueEventListener);
         }
     }
 
@@ -391,6 +398,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        mMap.setOnMarkerClickListener(this);
 //        mLocationRequest = new LocationRequest();
 //        mLocationRequest.setInterval(5000); //5 seconds
 //        mLocationRequest.setFastestInterval(3000); //3 seconds
@@ -640,14 +648,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
                             DEFAULT_ZOOM));
 
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            PlaceDetailsDialog.newInstance(mLikelyPlaceNames[position]).show(getActivity().getSupportFragmentManager(), "placeDetails");
-
-                            return false;
-                        }
-                    });
+//                    mMap.setOnMarkerClickListener(this);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // After Cancel code.
                 }
@@ -655,11 +656,24 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        coolSpotReference = databaseReference.child("Coolspot").child(marker.getTitle());
+        ValueEventListener singleCoolSpotValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Coolspot coolSpot = dataSnapshot.getValue(Coolspot.class);
+                PlaceDetailsDialog.newInstance(coolSpot.getName(), Long.toString(coolSpot.getTimestamp()), Long.toString(coolSpot.getPopularity())).show(getActivity().getSupportFragmentManager(), "placeDetails");
+            }
 
-    private void setPlaceMarkerOnTheMap(int requestCode) {
-        switch (requestCode) {
-            case PLACE_DEFINE_DIALOG_MARKER:
-                break;
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        coolSpotReference.addListenerForSingleValueEvent(singleCoolSpotValueListener);
+        coolSpotValueEventListener = singleCoolSpotValueListener;
+        return false;
     }
 }
