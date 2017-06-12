@@ -87,16 +87,31 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     //Firebase
     DatabaseReference databaseReference;
     DatabaseReference coolPointReference;
-    DatabaseReference populateMapReference;
+    DatabaseReference populateMapDrinkReference;
+    DatabaseReference populateMapNerdReference;
+    DatabaseReference populateMapGirlReference;
+    DatabaseReference populateMapMusicReference;
     DatabaseReference coolSpotReference;
     DatabaseReference coolPointDrinkReference;
+    DatabaseReference coolPointNerdReference;
+    DatabaseReference coolPointGirlReference;
+    DatabaseReference coolPointMusicReference;
     ValueEventListener coolSpotValueEventListener;
-    ValueEventListener mapValueEventListener;
+    ValueEventListener mapDrinkValueEventListener;
+    ValueEventListener mapNerdValueEventListener;
+    ValueEventListener mapGirlValueEventListener;
+    ValueEventListener mapMusicValueEventListener;
     ChildEventListener coolPointChildEventListener;
     ChildEventListener coolPointDrinkChildEventListener;
+    ChildEventListener coolPointNerdChildEventListener;
+    ChildEventListener coolPointGirlChildEventListener;
+    ChildEventListener coolPointMusicChildEventListener;
 
 
     List<Coolpoint> coolpointDrinkList = new ArrayList<>();
+    List<Coolpoint> coolpointNerdList = new ArrayList<>();
+    List<Coolpoint> coolpointGirlList = new ArrayList<>();
+    List<Coolpoint> coolpointMusicList = new ArrayList<>();
     List<Coolpoint> coolpointFunList = new ArrayList<>();
     List<Coolpoint> coolpointGirlsList = new ArrayList<>();
     ImageButton recommendButton;
@@ -149,9 +164,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 //        coolPointReference = databaseReference.child("Coolpoint");
-        populateMapReference = databaseReference.child("CoolpointDrink");
         coolPointDrinkReference = databaseReference.child("CoolpointDrink");
-
+        populateMapDrinkReference = databaseReference.child("CoolpointDrink");
+        coolPointNerdReference = databaseReference.child("CoolpointNerd");
+        populateMapNerdReference = databaseReference.child("CoolpointNerd");
+        coolPointGirlReference = databaseReference.child("CoolpointGirl");
+        populateMapGirlReference = databaseReference.child("CoolpointGirl");
+        coolPointMusicReference = databaseReference.child("CoolpointMusic");
+        populateMapMusicReference = databaseReference.child("CoolpointMusic");
     }
 
 
@@ -160,6 +180,119 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         super.onStart();
         Log.d(TAG, "onStart");
 //        getCoolspotsFromFirebase();
+        getCoolspotNerdDb();
+        getCoolspotDrinkDb();
+        getCoolspotGirlDb();
+        getCoolspotMusicDb();
+        populateMapWithDrinkCoolspots();
+        populateMapWithNerdCoolspots();
+        populateMapWithGirlCoolspots();
+        populateMapWithMusicCoolspots();
+    }
+
+    private void getCoolspotNerdDb() {
+        ChildEventListener childEventCoolpointNerdListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Coolpoint coolpoint = dataSnapshot.getValue(Coolpoint.class);
+                if (isRecentEnough(coolpoint.getTimestamp())) {
+                    coolpointNerdList.add(dataSnapshot.getValue(Coolpoint.class));
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointNerdReference.addChildEventListener(childEventCoolpointNerdListener);
+        coolPointNerdChildEventListener = childEventCoolpointNerdListener;
+    }
+
+    private void getCoolspotMusicDb() {
+        ChildEventListener childEventCoolpointMusicListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Coolpoint coolpoint = dataSnapshot.getValue(Coolpoint.class);
+                if (isRecentEnough(coolpoint.getTimestamp())) {
+                    coolpointMusicList.add(dataSnapshot.getValue(Coolpoint.class));
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointMusicReference.addChildEventListener(childEventCoolpointMusicListener);
+        coolPointMusicChildEventListener = childEventCoolpointMusicListener;
+    }
+
+    private void getCoolspotGirlDb() {
+        ChildEventListener childEventCoolpointGirlListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Coolpoint coolpoint = dataSnapshot.getValue(Coolpoint.class);
+                if (isRecentEnough(coolpoint.getTimestamp())) {
+                    coolpointGirlList.add(dataSnapshot.getValue(Coolpoint.class));
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointGirlReference.addChildEventListener(childEventCoolpointGirlListener);
+        coolPointGirlChildEventListener = childEventCoolpointGirlListener;
+    }
+
+    private void getCoolspotDrinkDb() {
         ChildEventListener childEventCoolpointDrinkListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -191,7 +324,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         };
         coolPointDrinkReference.addChildEventListener(childEventCoolpointDrinkListener);
         coolPointDrinkChildEventListener = childEventCoolpointDrinkListener;
-        populateMapWithCoolspots();
     }
 
     private boolean isRecentEnough(long timestamp) {
@@ -204,7 +336,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         boolean result = Hours.hoursBetween(lastModified, present)
                 .isLessThan(Hours.hours(2));
         Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
-        return result;
+        return true;
     }
 
     private String getDateFromTimestamp(long time) {
@@ -215,11 +347,11 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         return date;
     }
 
-    private void populateMapWithCoolspots() {
+    private void populateMapWithDrinkCoolspots() {
         ValueEventListener populateMapValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                populateMapWithLocations();
+                populateMapWithDrinkLocations();
             }
 
             @Override
@@ -227,8 +359,56 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        populateMapReference.addValueEventListener(populateMapValueEventListener);
-        mapValueEventListener = populateMapValueEventListener;
+        populateMapDrinkReference.addValueEventListener(populateMapValueEventListener);
+        mapDrinkValueEventListener = populateMapValueEventListener;
+    }
+
+    private void populateMapWithNerdCoolspots() {
+        ValueEventListener populateMapValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                populateMapWithNerdLocations();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        populateMapNerdReference.addValueEventListener(populateMapValueEventListener);
+        mapNerdValueEventListener = populateMapValueEventListener;
+    }
+
+    private void populateMapWithGirlCoolspots() {
+        ValueEventListener populateMapValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                populateMapWithGirlLocations();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        populateMapGirlReference.addValueEventListener(populateMapValueEventListener);
+        mapGirlValueEventListener = populateMapValueEventListener;
+    }
+
+    private void populateMapWithMusicCoolspots() {
+        ValueEventListener populateMapValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                populateMapWithMusicLocations();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        populateMapMusicReference.addValueEventListener(populateMapValueEventListener);
+        mapMusicValueEventListener = populateMapValueEventListener;
     }
 
 //    private void getCoolspotsFromFirebase() {
@@ -284,8 +464,32 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             coolPointDrinkReference.removeEventListener(coolPointDrinkChildEventListener);
         }
 
-        if (mapValueEventListener != null) {
-            populateMapReference.removeEventListener(mapValueEventListener);
+        if (coolPointNerdChildEventListener != null) {
+            coolPointNerdReference.removeEventListener(coolPointNerdChildEventListener);
+        }
+
+        if (coolPointGirlChildEventListener != null) {
+            coolPointGirlReference.removeEventListener(coolPointGirlChildEventListener);
+        }
+
+        if (coolPointMusicChildEventListener != null) {
+            coolPointMusicReference.removeEventListener(coolPointMusicChildEventListener);
+        }
+
+        if (mapDrinkValueEventListener != null) {
+            populateMapDrinkReference.removeEventListener(mapDrinkValueEventListener);
+        }
+
+        if (mapNerdValueEventListener != null) {
+            populateMapNerdReference.removeEventListener(mapNerdValueEventListener);
+        }
+
+        if (mapGirlValueEventListener != null) {
+            populateMapGirlReference.removeEventListener(mapGirlValueEventListener);
+        }
+
+        if (mapMusicValueEventListener != null) {
+            populateMapMusicReference.removeEventListener(mapMusicValueEventListener);
         }
 
         if (coolSpotValueEventListener != null) {
@@ -605,8 +809,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void populateMapWithLocations() {
-        Log.d(TAG, "populateMapWithLocations");
+    public void populateMapWithDrinkLocations() {
+        Log.d(TAG, "populateMapWithDrinkLocations");
         for (Coolpoint coolpointDrink : coolpointDrinkList) {
             mMap.addMarker(new MarkerOptions()
                     .title(coolpointDrink.getName())
@@ -614,23 +818,36 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     .position(new LatLng(coolpointDrink.getLatitude(), coolpointDrink.getLongitude())));
             Log.d(TAG, "DRINK PLACE ADDED");
         }
+    }
 
-        for (Coolpoint coolpointFun : coolpointFunList) {
+    private void populateMapWithNerdLocations() {
+        for (Coolpoint coolpointNerd : coolpointNerdList) {
             mMap.addMarker(new MarkerOptions()
-                    .title(coolpointFun.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
-                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
-            Log.d(TAG, "FUN PLACE ADDED");
+                    .title(coolpointNerd.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_nerd))
+                    .position(new LatLng(coolpointNerd.getLatitude(), coolpointNerd.getLongitude())));
+            Log.d(TAG, "NERD PLACE ADDED");
         }
+    }
 
-        for (Coolpoint coolpointGirls : coolpointGirlsList) {
+    private void populateMapWithGirlLocations() {
+        for (Coolpoint coolpointGirl : coolpointGirlList) {
             mMap.addMarker(new MarkerOptions()
-                    .title(coolpointGirls.getName())
+                    .title(coolpointGirl.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
-                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
-            Log.d(TAG, "GIRLS PLACE ADDED");
+                    .position(new LatLng(coolpointGirl.getLatitude(), coolpointGirl.getLongitude())));
+            Log.d(TAG, "GIRL PLACE ADDED");
         }
+    }
 
+    private void populateMapWithMusicLocations() {
+        for (Coolpoint coolpointMusic : coolpointMusicList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointMusic.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_music))
+                    .position(new LatLng(coolpointMusic.getLatitude(), coolpointMusic.getLongitude())));
+            Log.d(TAG, "MUSIC PLACE ADDED");
+        }
     }
 
     public void populateDrinkFilter() {

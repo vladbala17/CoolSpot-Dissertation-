@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -37,14 +36,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import apps.smartme.coolspot.CoolSpotMapFragment;
 import apps.smartme.coolspot.CustomTypefaceSpan;
 import apps.smartme.coolspot.FontTypeface;
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.CoolPointAdapter;
-import apps.smartme.coolspot.domain.Coolpoint;
 
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SearchView.OnCloseListener {
 
@@ -294,7 +291,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onClose() {
-        coolSpotMapFragment.populateMapWithLocations();
+        coolSpotMapFragment.populateMapWithDrinkLocations();
         return false;
     }
 }
