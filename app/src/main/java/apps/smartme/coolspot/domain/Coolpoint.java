@@ -10,15 +10,17 @@ public class Coolpoint {
     private String name;
     private double latitude;
     private double longitude;
+    private long timestamp;
 
     public Coolpoint() {
     }
 
-    public Coolpoint(long count, String name, double latitude, double longitude) {
+    public Coolpoint(long count, String name, double latitude, double longitude, long timestamp) {
         this.count = count;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.timestamp = timestamp;
     }
 
     public long getCount() {
@@ -53,6 +55,14 @@ public class Coolpoint {
         this.longitude = longitude;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return "Coolpoint{" +
@@ -60,6 +70,7 @@ public class Coolpoint {
                 ", name='" + name + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }

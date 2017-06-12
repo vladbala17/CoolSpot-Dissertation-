@@ -47,6 +47,15 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
             case "expensive":
                 holder.image.setImageResource(R.drawable.ic_expensive);
                 break;
+            case "drink":
+                holder.image.setImageResource(R.drawable.ic_free_drinks);
+                break;
+            case "fun":
+                holder.image.setImageResource(R.drawable.ic_free_entrance);
+                break;
+            case "girls":
+                holder.image.setImageResource(R.drawable.ic_girls);
+                break;
         }
     }
 
@@ -80,4 +89,5 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
         }
         notifyDataSetChanged();
     }
+
 }
