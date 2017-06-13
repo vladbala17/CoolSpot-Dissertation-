@@ -8,8 +8,8 @@
         android:title="drink" />
 
     <item
-        android:id="@+id/fun_filter"
-        android:icon="@drawable/ic_free_entrance"
+        android:id="@+id/nerd_filter"
+        android:icon="@drawable/ic_nerd"
         android:title="fun" />
 
     <item

@@ -1,12 +1,14 @@
 package apps.smartme.coolspot.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +21,23 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.StyleDialogAdapter;
+import apps.smartme.coolspot.domain.Coolpoint;
+import apps.smartme.coolspot.domain.CoolspotCoolpoint;
 
 /**
  * Created by vlad on 10.05.2017.
@@ -35,26 +48,43 @@ public class PlaceDetailsDialog extends DialogFragment {
 
     DatabaseReference databaseReference;
     DatabaseReference coolSpotCoolpointsReference;
-    ChildEventListener coolSpotCoolpointChildEventListener;
+    DatabaseReference coolSpotUsersReference;
+    DatabaseReference userFriendsReference;
+    ValueEventListener coolSpotCoolpointChildEventListener;
+    ChildEventListener coolSpotUsersChildEventListener;
+    ChildEventListener userFriendsChildEventListener;
 
     public static final String PLACE_NAME = "placeName";
     public static final String PLACE_POPULARITY = "placePopularity";
     public static final String PLACE_TIMESTAMP = "placeTimestamp";
-    private List<String> coolPointList;
+    public static final String PLACE_USERS = "placeUsers";
+    private final DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+    private List<String> coolspotCoolPointList;
+    private ArrayList<String> coolspotUsers = new ArrayList<>();
+    private ArrayList<String> userFriends = new ArrayList<>();
+    private List<Coolpoint> completeCoolpointList;
     private RecyclerView recyclerView;
     private TextView placeDefineTextView;
     private TextView timeLastVisitedTextView;
     private TextView coolPointsNumberTextView;
+    private TextView mutualFriendsNumberTextView;
     private StyleDialogAdapter mAdapter;
 
-    public static PlaceDetailsDialog newInstance(String coolSpotName, String timeStamp, String popularity) {
+    public static PlaceDetailsDialog newInstance(String coolSpotName, long timeStamp, String popularity) {
         PlaceDetailsDialog f = new PlaceDetailsDialog();
         Bundle args = new Bundle();
         args.putString(PLACE_NAME, coolSpotName);
-        args.putString(PLACE_TIMESTAMP, timeStamp);
+        args.putLong(PLACE_TIMESTAMP, timeStamp);
         args.putString(PLACE_POPULARITY, popularity);
+
         f.setArguments(args);
         return f;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -62,14 +92,37 @@ public class PlaceDetailsDialog extends DialogFragment {
         Log.d(TAG, "OnCreate");
         super.onCreate(savedInstanceState);
         String placeDefineTitle = getArguments().getString(PLACE_NAME);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("CoolSpotCoolpoints");
-        coolSpotCoolpointsReference = databaseReference.child(placeDefineTitle);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        coolSpotCoolpointsReference = databaseReference.child("CoolspotCoolpoints").child(placeDefineTitle);
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CoolspotCoolpoint coolpoint = dataSnapshot.getValue(CoolspotCoolpoint.class);
+                if (isRecentEnough(coolpoint.getTimestamp())) {
+                    coolspotCoolPointList.add(coolpoint.getCoolpointFirst());
+                    coolspotCoolPointList.add(coolpoint.getCoolpointSecond());
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        coolSpotCoolpointsReference.orderByKey().addValueEventListener(valueEventListener);
+        coolSpotCoolpointChildEventListener = valueEventListener;
+
+        coolSpotUsersReference = databaseReference.child("CoolspotUsers").child(placeDefineTitle);
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "Coolpoint added to the list" + dataSnapshot.getKey());
-                coolPointList.add(dataSnapshot.getKey());
-                mAdapter.notifyDataSetChanged();
+                Log.d(TAG, "onAttach child added " + dataSnapshot.getKey());
+                coolspotUsers.add(dataSnapshot.getKey());
+//                mutualFriendsNumberTextView.setText(String.valueOf(coolspotUsers.size()));
             }
 
             @Override
@@ -92,10 +145,41 @@ public class PlaceDetailsDialog extends DialogFragment {
 
             }
         };
-        coolSpotCoolpointsReference.orderByKey().addChildEventListener(childEventListener);
-        coolSpotCoolpointChildEventListener = childEventListener;
+        coolSpotUsersReference.addChildEventListener(childEventListener);
+        coolSpotUsersChildEventListener = childEventListener;
 
+        userFriendsReference = databaseReference.child("UserFriends");
+        ChildEventListener childEventListener1 = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                userFriends.add(dataSnapshot.getKey());
+                mutualFriendsNumber(userFriends,coolspotUsers);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        userFriendsReference.addChildEventListener(childEventListener1);
+        userFriendsChildEventListener = childEventListener1;
     }
+
 
     @NonNull
     @Override
@@ -112,17 +196,19 @@ public class PlaceDetailsDialog extends DialogFragment {
         Log.d(TAG, "onCreateView()");
         View placeDefineDialog = inflater.inflate(R.layout.custom_place_details_dialog, null, false);
         String placeDefineTitle = getArguments().getString(PLACE_NAME);
-        String placeTimestamp = getArguments().getString(PLACE_TIMESTAMP);
+        long placeTimestamp = getArguments().getLong(PLACE_TIMESTAMP);
+        String lastActivity = getTimeSinceLastVisit(placeTimestamp);
         String placePopularity = getArguments().getString(PLACE_POPULARITY);
-        coolPointList = new ArrayList<>();
+        coolspotCoolPointList = new ArrayList<>();
         placeDefineTextView = (TextView) placeDefineDialog.findViewById(R.id.place_details_name);
         timeLastVisitedTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_last_visited_value);
         coolPointsNumberTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_coolpoints_number);
+        mutualFriendsNumberTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_mutual_friends_value);
         coolPointsNumberTextView.setText(String.valueOf(placePopularity));
-        timeLastVisitedTextView.setText(placeTimestamp);
+        timeLastVisitedTextView.setText(lastActivity);
         placeDefineTextView.setText(placeDefineTitle);
         recyclerView = (RecyclerView) placeDefineDialog.findViewById(R.id.cool_points_recycler_view);
-        mAdapter = new StyleDialogAdapter(coolPointList);
+        mAdapter = new StyleDialogAdapter(coolspotCoolPointList);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -137,6 +223,17 @@ public class PlaceDetailsDialog extends DialogFragment {
         if (coolSpotCoolpointChildEventListener != null) {
             coolSpotCoolpointsReference.removeEventListener(coolSpotCoolpointChildEventListener);
         }
+
+        if (coolSpotUsersChildEventListener != null) {
+            coolSpotUsersReference.removeEventListener(coolSpotUsersChildEventListener);
+        }
+
+        if (userFriendsChildEventListener != null) {
+            userFriendsReference.removeEventListener(userFriendsChildEventListener);
+        }
+
+
+
     }
 
     private void prepareStyleData() {
@@ -149,5 +246,61 @@ public class PlaceDetailsDialog extends DialogFragment {
 
 
 //        mAdapter.notifyDataSetChanged();
+    }
+
+    private boolean isRecentEnough(long timestamp) {
+        Long currentDateTimestamp = System.currentTimeMillis() / 1000;
+        String fetchedDateTime = getDateFromTimestamp(timestamp);
+        String currentTime = getDateFromTimestamp(currentDateTimestamp);
+        DateTime lastModified = dtf.parseDateTime(fetchedDateTime);
+        DateTime present = dtf.parseDateTime(currentTime);
+
+        boolean result = Hours.hoursBetween(lastModified, present)
+                .isLessThan(Hours.hours(2));
+        Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
+        return true;
+    }
+
+    private String getTimeSinceLastVisit(long timestamp) {
+        String longAgo = "";
+        Long currentDateTimestamp = System.currentTimeMillis() / 1000;
+        String fetchedDateTime = getDateFromTimestamp(timestamp);
+        String currentTime = getDateFromTimestamp(currentDateTimestamp);
+        DateTime lastModified = dtf.parseDateTime(fetchedDateTime);
+        DateTime present = dtf.parseDateTime(currentTime);
+
+        if (Hours.hoursBetween(lastModified, present)
+                .isLessThan(Hours.hours(2))) {
+            longAgo = Hours.hoursBetween(lastModified, present).getHours() + "hours ";
+            longAgo = longAgo + Minutes.minutesBetween(lastModified, present).getMinutes() + " minutes ";
+        } else {
+            longAgo = longAgo + Minutes.minutesBetween(lastModified, present).getMinutes() + " minutes ";
+        }
+        Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
+        return longAgo;
+    }
+
+    private String getDateFromTimestamp(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time * 1000);
+        String date = DateFormat.format("MM/dd/yyyy HH:mm:ss", cal).toString();
+        Log.d(TAG, "CURRENT TIME FROM LONG TIMESTAMP" + date);
+        return date;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    private void mutualFriendsNumber(ArrayList<String> userFriends, ArrayList<String> coolspotUsers) {
+        int count = 0;
+        for (String st : userFriends) {
+            if (coolspotUsers.contains(st)) {
+                count = count + 1;
+            }
+        }
+        mutualFriendsNumberTextView.setText(String.valueOf(count));
+        return ;
     }
 }

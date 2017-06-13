@@ -221,8 +221,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
             case R.id.girls_filter:
                 coolSpotMapFragment.populateMapWithFilter("girls");
                 break;
-            case R.id.fun_filter:
-                coolSpotMapFragment.populateMapWithFilter("fun");
+            case R.id.nerd_filter:
+                coolSpotMapFragment.populateMapWithFilter("nerd");
                 break;
             case R.id.drink_filter:
                 coolSpotMapFragment.populateMapWithFilter("drink");

@@ -19,17 +19,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/place_details_name"
-        android:text="Time" />
+        android:text="Last visited" />
 
     <TextView
         android:id="@+id/tv_last_visited_value"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/tv_coolpoints_number"
         android:layout_below="@id/place_details_name"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/time_last_visited"
         android:text="Time value" />
+
+    <TextView
+        android:id="@+id/tv_last_visited_ago_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_coolpoints_number"
+        android:layout_below="@id/place_details_name"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/tv_last_visited_value"
+        android:text="ago" />
 
 
     <TextView
@@ -66,7 +76,7 @@
         android:text="Mutual friends" />
 
     <TextView
-        android:id="@+id/mutual_friends_number"
+        android:id="@+id/tv_mutual_friends_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cool_points_recycler_view"

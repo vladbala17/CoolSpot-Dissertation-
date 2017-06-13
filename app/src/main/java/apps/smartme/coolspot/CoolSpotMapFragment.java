@@ -62,6 +62,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
+import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
 import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.Coolspot;
@@ -861,24 +862,24 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    private void populateFunFilter() {
+    private void populateNerdFilter() {
         mMap.clear();
-        for (Coolpoint coolpointFun : coolpointFunList) {
+        for (Coolpoint coolpointNerd : coolpointNerdList) {
             mMap.addMarker(new MarkerOptions()
-                    .title(coolpointFun.getName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_free_entrance))
-                    .position(new LatLng(coolpointFun.getLatitude(), coolpointFun.getLongitude())));
+                    .title(coolpointNerd.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_nerd))
+                    .position(new LatLng(coolpointNerd.getLatitude(), coolpointNerd.getLongitude())));
             Log.d(TAG, "FUN PLACE ADDED");
         }
     }
 
     public void populateGirlsFilter() {
         mMap.clear();
-        for (Coolpoint coolpointGirls : coolpointGirlsList) {
+        for (Coolpoint coolpointGirl : coolpointGirlList) {
             mMap.addMarker(new MarkerOptions()
-                    .title(coolpointGirls.getName())
+                    .title(coolpointGirl.getName())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_girls))
-                    .position(new LatLng(coolpointGirls.getLatitude(), coolpointGirls.getLongitude())));
+                    .position(new LatLng(coolpointGirl.getLatitude(), coolpointGirl.getLongitude())));
             Log.d(TAG, "GIRLS PLACE ADDED");
         }
     }
@@ -886,8 +887,8 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public void populateMapWithFilter(String filter) {
         if (filter.equals("girls")) {
             populateGirlsFilter();
-        } else if (filter.equals("fun")) {
-            populateFunFilter();
+        } else if (filter.equals("nerd")) {
+            populateNerdFilter();
         } else if (filter.equals("drink")) {
             populateDrinkFilter();
         }
@@ -947,18 +948,18 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
                             DEFAULT_ZOOM));
 
-                    Coolspot coolspot = new Coolspot(selectedItemName, 0, markerLatLng.latitude, markerLatLng.longitude);
-
-                    DatabaseReference coolspotReference = databaseReference.child("Coolspot").child(selectedItemName);
-                    if (coolspotReference != null) {
-                        Map<String, Object> coolSpotMap = new HashMap<>();
-                        coolSpotMap.put(selectedItemName, coolspot);
-                        coolspotReference.updateChildren(coolSpotMap);
-
-
-                    } else {
-
-                    }
+//                    Coolspot coolspot = new Coolspot(selectedItemName, 0, markerLatLng.latitude, markerLatLng.longitude);
+//
+//                    DatabaseReference coolspotReference = databaseReference.child("Coolspot").child(selectedItemName);
+//                    if (coolspotReference != null) {
+//                        Map<String, Object> coolSpotMap = new HashMap<>();
+//                        coolSpotMap.put(selectedItemName, coolspot);
+//                        coolspotReference.updateChildren(coolSpotMap);
+//
+//
+//                    } else {
+//
+//                    }
 
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // After Cancel code.
@@ -974,7 +975,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Coolspot coolSpot = dataSnapshot.getValue(Coolspot.class);
-                // PlaceDetailsDialog.newInstance(coolSpot.getName(), Long.toString(coolSpot.getTimestamp()), Long.toString(coolSpot.getPopularity())).show(getActivity().getSupportFragmentManager(), "placeDetails");
+                 PlaceDetailsDialog.newInstance(coolSpot.getName(), coolSpot.getTimestamp(), Long.toString(coolSpot.getPopularity())).show(getActivity().getSupportFragmentManager(), "placeDetails");
             }
 
             @Override

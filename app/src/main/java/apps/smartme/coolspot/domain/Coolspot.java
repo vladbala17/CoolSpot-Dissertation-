@@ -8,14 +8,14 @@ public class Coolspot {
     private String name;
     private double latitude;
     private double longitude;
-    //private long popularity;
+    private long popularity;
     private long timestamp;
 
-    public Coolspot(String name, long timestamp, double latitude, double longitude) {
+    public Coolspot(String name, long timestamp, double latitude, double longitude,long popularity) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
-
+        this.popularity = popularity;
         this.timestamp = timestamp;
     }
 
@@ -53,5 +53,13 @@ public class Coolspot {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public long getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(long popularity) {
+        this.popularity = popularity;
     }
 }
