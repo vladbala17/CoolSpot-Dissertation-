@@ -50,7 +50,7 @@ public class PlaceDetailsDialog extends DialogFragment {
     DatabaseReference coolSpotCoolpointsReference;
     DatabaseReference coolSpotUsersReference;
     DatabaseReference userFriendsReference;
-    ValueEventListener coolSpotCoolpointChildEventListener;
+    ChildEventListener coolSpotCoolpointChildEventListener;
     ChildEventListener coolSpotUsersChildEventListener;
     ChildEventListener userFriendsChildEventListener;
 
@@ -62,7 +62,7 @@ public class PlaceDetailsDialog extends DialogFragment {
     private List<String> coolspotCoolPointList;
     private ArrayList<String> coolspotUsers = new ArrayList<>();
     private ArrayList<String> userFriends = new ArrayList<>();
-    private List<Coolpoint> completeCoolpointList;
+    private List<String> completeCoolpointList;
     private RecyclerView recyclerView;
     private TextView placeDefineTextView;
     private TextView timeLastVisitedTextView;
@@ -96,25 +96,52 @@ public class PlaceDetailsDialog extends DialogFragment {
 
         coolSpotCoolpointsReference = databaseReference.child("CoolspotCoolpoints").child(placeDefineTitle);
 
-        ValueEventListener valueEventListener = new ValueEventListener() {
+        ChildEventListener childEventListener2 = new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                CoolspotCoolpoint coolpoint = dataSnapshot.getValue(CoolspotCoolpoint.class);
-                if (isRecentEnough(coolpoint.getTimestamp())) {
-                    coolspotCoolPointList.add(coolpoint.getCoolpointFirst());
-                    coolspotCoolPointList.add(coolpoint.getCoolpointSecond());
-                    mAdapter.notifyDataSetChanged();
-                }
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                coolspotCoolPointList.add(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
+        } ;
 
-        coolSpotCoolpointsReference.orderByKey().addValueEventListener(valueEventListener);
-        coolSpotCoolpointChildEventListener = valueEventListener;
+//        ValueEventListener valueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                CoolspotCoolpoint coolpoint = dataSnapshot.getValue(CoolspotCoolpoint.class);
+//                if (isRecentEnough(coolpoint.getTimestamp())) {
+//                    coolspotCoolPointList.add(coolpoint.getCoolpointFirst());
+//                    coolspotCoolPointList.add(coolpoint.getCoolpointSecond());
+//                    mAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+
+        coolSpotCoolpointsReference.orderByValue().limitToLast(2).addChildEventListener(childEventListener2);
+        coolSpotCoolpointChildEventListener = childEventListener2;
 
         coolSpotUsersReference = databaseReference.child("CoolspotUsers").child(placeDefineTitle);
         ChildEventListener childEventListener = new ChildEventListener() {

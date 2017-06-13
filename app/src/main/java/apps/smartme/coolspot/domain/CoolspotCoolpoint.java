@@ -13,11 +13,11 @@ public class CoolspotCoolpoint {
     public CoolspotCoolpoint() {
     }
 
-    public CoolspotCoolpoint(String name, String coolpointFirst, String coolpointSecond, long timestamp) {
-        this.name = name;
+    public CoolspotCoolpoint(String coolpointFirst, String coolpointSecond) {
+
         this.coolpointFirst = coolpointFirst;
         this.coolpointSecond = coolpointSecond;
-        this.timestamp = timestamp;
+
     }
 
     public String getName() {
