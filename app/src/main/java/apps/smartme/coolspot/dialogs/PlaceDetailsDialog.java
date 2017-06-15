@@ -26,9 +26,11 @@ import com.google.firebase.database.ValueEventListener;
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,7 +60,7 @@ public class PlaceDetailsDialog extends DialogFragment {
     public static final String PLACE_POPULARITY = "placePopularity";
     public static final String PLACE_TIMESTAMP = "placeTimestamp";
     public static final String PLACE_USERS = "placeUsers";
-    private final DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+    private final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private List<String> coolspotCoolPointList;
     private ArrayList<String> coolspotUsers = new ArrayList<>();
     private ArrayList<String> userFriends = new ArrayList<>();
@@ -290,18 +292,18 @@ public class PlaceDetailsDialog extends DialogFragment {
 
     private String getTimeSinceLastVisit(long timestamp) {
         String longAgo = "";
-        Long currentDateTimestamp = System.currentTimeMillis() / 1000;
-        String fetchedDateTime = getDateFromTimestamp(timestamp);
-        String currentTime = getDateFromTimestamp(currentDateTimestamp);
-        DateTime lastModified = dtf.parseDateTime(fetchedDateTime);
-        DateTime present = dtf.parseDateTime(currentTime);
+//        new Timestamp().to
+//        String fetchedDateTime = getDateFromTimestamp();
+//        String currentTime = getDateFromTimestamp(currentDateTimestamp);
+        DateTime lastModified = dtf.parseDateTime(new Timestamp(timestamp).toString());
+        DateTime present = dtf.parseDateTime(new Timestamp(System.currentTimeMillis()).toString());
 
         if (Hours.hoursBetween(lastModified, present)
                 .isLessThan(Hours.hours(2))) {
-            longAgo = Hours.hoursBetween(lastModified, present).getHours() + "hours ";
-            longAgo = longAgo + Minutes.minutesBetween(lastModified, present).getMinutes() + " minutes ";
+            longAgo = String.valueOf(Hours.hoursBetween(present, lastModified).getHours()) + "hours ";
+            longAgo = longAgo +" " +String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
         } else {
-            longAgo = longAgo + Minutes.minutesBetween(lastModified, present).getMinutes() + " minutes ";
+            longAgo = longAgo+" " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
         }
         Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
         return longAgo;

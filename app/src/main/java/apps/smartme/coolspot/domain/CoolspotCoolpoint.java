@@ -5,10 +5,8 @@ package apps.smartme.coolspot.domain;
  */
 
 public class CoolspotCoolpoint {
-    private String name;
     private String coolpointFirst;
     private String coolpointSecond;
-    private long timestamp;
 
     public CoolspotCoolpoint() {
     }
@@ -20,13 +18,6 @@ public class CoolspotCoolpoint {
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getCoolpointFirst() {
         return coolpointFirst;
@@ -44,11 +35,4 @@ public class CoolspotCoolpoint {
         this.coolpointSecond = coolpointSecond;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 }

@@ -179,7 +179,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         populateMapGirlReference = databaseReference.child("CoolpointGirl");
         coolPointMusicReference = databaseReference.child("CoolpointMusic");
         populateMapMusicReference = databaseReference.child("CoolpointMusic");
-        coolspotReference = databaseReference.child("Coolspot");
+        coolSpotReference = databaseReference.child("Coolspot");
     }
 
 
@@ -955,193 +955,204 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     // Position the map's camera at the location of the marker.
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
                             DEFAULT_ZOOM));
-                    long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
-                    Coolspot coolspot = new Coolspot(placeName, timestamp, markerLatLng.latitude, markerLatLng.longitude, 1);
-                    DatabaseReference coolspotCoolpointFirstReference = databaseReference.child("CoolspotCoolpoints").child(placeName).child(coolPointFirst);
-                    DatabaseReference coolspotCoolpointFirstReferenceNotDefined = databaseReference.child("CoolspotCoolpoints");
-                    DatabaseReference coolspotUsersReference = databaseReference.child("CoolspotUsers").child(placeName);
-                    DatabaseReference coolspotUsersReferenceDefine = databaseReference.child("CoolspotUsers");
-                    DatabaseReference usersLocationReference = databaseReference.child("UserLocation").child(placeName);
-                    DatabaseReference usersLocationReferenceDefine = databaseReference.child("UserLocation");
-                    DatabaseReference usersLocationDateReference = databaseReference.child("UserLocationDate").child(placeName);
-                    DatabaseReference usersLocationDateReferenceDefine = databaseReference.child("UserLocationDate");
-                    final DatabaseReference popularityReference = databaseReference.child("Coolspot").child(placeName).child("popularity");
-                    final DatabaseReference popularityReferenceDrink = coolPointDrinkReference.child(placeName).child("popularity");
-                    Map<String, Object> coolspotMap = new HashMap<>();
-                    Map<String, Object> coolspotUserMap = new HashMap<>();
-                    Map<String, Object> coolspotCoolpoints = new HashMap<>();
-
-                    if (coolSpotReference.child(placeName) != null) {
-                        coolspotMap.put("timestamp", timestamp);
-                        coolSpotReference.updateChildren(coolspotMap, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                popularityReference.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Long currentPopularityValue = mutableData.getValue(Long.class);
-                                        if (currentPopularityValue == null) {
-                                            mutableData.setValue(1);
-                                        } else {
-                                            mutableData.setValue(currentPopularityValue + 1);
-                                        }
-
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                                    }
-                                });
+                    final long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
+                    final Coolspot coolspot = new Coolspot(placeName, timestamp, markerLatLng.latitude, markerLatLng.longitude, 1);
+                    coolSpotReference.child(placeName).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.getValue() != null) {
+                                updateCoolspotChild(timestamp, placeName);
+                                updateCoolPointDrinkChild(timestamp, placeName);
+                                updateCoolpointFirst(placeName, coolPointFirst);
+                                updateCoolspotUserChild(placeName);
+                                updateUserLocationChild(placeName);
+                                updateUserLocationDateChild(timestamp, placeName);
+                            } else {
+                                addCoolspotChild(placeName, coolspot);
+                                addCoolspotDrinkChild(placeName, coolspot);
+                                addCoolspotCoolpoint(placeName, coolPointFirst, coolPointSecond);
+                                addCoolspotUsers(placeName, "Vlad Bala");
+                                addUserLocationChild(placeName);
+                                addUserLocationDateChild(placeName, timestamp);
                             }
-                        });
-                        coolPointDrinkReference.updateChildren(coolspotMap, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                popularityReferenceDrink.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Long currentPopularityValue = mutableData.getValue(Long.class);
-                                        if (currentPopularityValue == null) {
-                                            mutableData.setValue(1);
-                                        } else {
-                                            mutableData.setValue(currentPopularityValue + 1);
-                                        }
+                        }
 
-                                        return Transaction.success(mutableData);
-                                    }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                        }
 
-                                    }
-                                });
-                            }
-                        });
-                        coolspotCoolpointFirstReference.runTransaction(new Transaction.Handler() {
-                            @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                Integer currentCoolpointValue = mutableData.getValue(Integer.class);
-                                if (currentCoolpointValue == null) {
-                                    mutableData.setValue(1);
-                                } else {
-                                    mutableData.setValue(currentCoolpointValue + 1);
-                                }
-
-                                return Transaction.success(mutableData);
-                            }
-
-                            @Override
-                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                            }
-                        });
-                        coolspotUserMap.put("Vlad Bala", true);
-                        coolspotUsersReference.updateChildren(coolspotUserMap);
-                        usersLocationReference.runTransaction(new Transaction.Handler() {
-                            @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                Integer currentCoolpointValue = mutableData.getValue(Integer.class);
-                                if (currentCoolpointValue == null) {
-                                    mutableData.setValue(1);
-                                } else {
-                                    mutableData.setValue(currentCoolpointValue + 1);
-                                }
-
-                                return Transaction.success(mutableData);
-                            }
-
-                            @Override
-                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                            }
-                        });
-                        usersLocationDateReference.updateChildren(coolspotMap);
-                    } else {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put(placeName, coolspot);
-                        coolSpotReference.updateChildren(map, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                final DatabaseReference popularityReference = databaseReference.child("Coolspot").child(placeName).child("popularity");
-                                popularityReference.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Long currentPopularityValue = mutableData.getValue(Long.class);
-                                        if (currentPopularityValue == null) {
-                                            mutableData.setValue(1);
-                                        } else {
-                                            mutableData.setValue(currentPopularityValue + 1);
-                                        }
-
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                                    }
-                                });
-                            }
-                        });
-                        coolPointDrinkReference.updateChildren(map, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                final DatabaseReference popularityReferenceDrink = coolPointDrinkReference.child(placeName).child("popularity");
-
-                                popularityReferenceDrink.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Long currentPopularityValue = mutableData.getValue(Long.class);
-                                        if (currentPopularityValue == null) {
-                                            mutableData.setValue(1);
-                                        } else {
-                                            mutableData.setValue(currentPopularityValue + 1);
-                                        }
-
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                                    }
-                                });
-                            }
-                        });
-                        Map<String,Object> mapCoolpoint = new HashMap<>();
-                        CoolspotCoolpoint coolspotCoolpoint = new CoolspotCoolpoint("1","1");
-                        mapCoolpoint.put(placeName,coolspotCoolpoint);
-                        coolspotCoolpointFirstReferenceNotDefined.updateChildren(mapCoolpoint);
-
-                        Map<String,Object> userCoolpoint = new HashMap<>();
-                        CoolspotUser coolspotUser = new CoolspotUser("Vlad Bala",true);
-                        userCoolpoint.put(placeName,coolspotUser);
-                        coolspotUsersReferenceDefine.updateChildren(userCoolpoint);
-                        Map<String,Object> userLocation = new HashMap<>();
-                        userLocation.put(placeName,1);
-                        usersLocationReferenceDefine.updateChildren(userLocation);
-                        Map<String,Object> userLocationDate = new HashMap<>();
-                        userLocationDate.put(placeName,timestamp);
-                        usersLocationDateReferenceDefine.updateChildren(userLocationDate);
-                    }
-//create example
-//                    DatabaseReference coolspotReference = databaseReference.child("Coolspot");
-//                    Map<String,Object> map = new HashMap<>();
-//                    map.put(placeName,coolspot);
-//update example
-//                    map.put("popularity",10);
-//                    map.put("timestamp",new Timestamp(System.currentTimeMillis()).getTime());
-
-//                    coolspotReference.updateChildren(map);
-
+                    });
 
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // After Cancel code.
                 }
                 break;
         }
+    }
+
+    private void addCoolspotChild(final String placeName, Coolspot coolspot) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(placeName, coolspot);
+        DatabaseReference dbref = databaseReference.child("Coolspot");
+        dbref.updateChildren(map);
+    }
+
+    private void addCoolspotDrinkChild(String placeName, Coolspot coolspot) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(placeName, coolspot);
+        DatabaseReference dbref = databaseReference.child("CoolpointDrink");
+        dbref.updateChildren(map);
+    }
+
+    private void addCoolspotCoolpoint(String placeName, String coolspotFirst, String coolspotSecond) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(coolspotFirst, 1);
+        map.put(coolspotSecond, 1);
+        DatabaseReference coolspotCoolpointFirstReferenceNotDefined = databaseReference.child("CoolspotCoolpoints").child(placeName);
+        coolspotCoolpointFirstReferenceNotDefined.updateChildren(map);
+    }
+
+    private void addCoolspotUsers(String placeName, String user) {
+        DatabaseReference coolspotUsersReferenceDefine = databaseReference.child("CoolspotUsers").child(placeName);
+        Map<String, Object> map = new HashMap<>();
+        map.put(user, true);
+        coolspotUsersReferenceDefine.updateChildren(map);
+
+    }
+
+    private void addUserLocationChild(String placeName) {
+        DatabaseReference usersLocationReferenceDefine = databaseReference.child("UserLocation");
+        Map<String, Object> map = new HashMap<>();
+        map.put(placeName, 1);
+        usersLocationReferenceDefine.updateChildren(map);
+    }
+
+    private void addUserLocationDateChild(String placeName, long timestamp) {
+        DatabaseReference usersLocationDateReferenceDefine = databaseReference.child("UserLocationDate");
+        Map<String, Object> map = new HashMap<>();
+        map.put(placeName, timestamp);
+        usersLocationDateReferenceDefine.updateChildren(map);
+    }
+
+    private void updateUserLocationDateChild(long timestamp, String placeName) {
+        DatabaseReference usersLocationDateReference = databaseReference.child("UserLocationDate");
+        Map<String, Object> coolspotMap = new HashMap<>();
+        coolspotMap.put(placeName, timestamp);
+        usersLocationDateReference.updateChildren(coolspotMap);
+    }
+
+    private void updateUserLocationChild(String placeName) {
+        DatabaseReference usersLocationReference = databaseReference.child("UserLocation").child(placeName);
+        usersLocationReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentCoolpointValue = mutableData.getValue(Integer.class);
+                if (currentCoolpointValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentCoolpointValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    private void updateCoolspotUserChild(String placeName) {
+        DatabaseReference coolspotUsersReference = databaseReference.child("CoolspotUsers").child(placeName);
+        Map<String, Object> coolspotUserMap = new HashMap<>();
+        coolspotUserMap.put("Vlad Bala", true);
+        coolspotUsersReference.updateChildren(coolspotUserMap);
+    }
+
+    private void updateCoolpointFirst(String placeName, String coolPointFirst) {
+        DatabaseReference coolspotCoolpointFirstReference = databaseReference.child("CoolspotCoolpoints").child(placeName).child(coolPointFirst);
+        coolspotCoolpointFirstReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentCoolpointValue = mutableData.getValue(Integer.class);
+                if (currentCoolpointValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentCoolpointValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    private void updateCoolPointDrinkChild(long timestamp, String placeName) {
+        Log.d(TAG, "updateCoolPointDrinkChild child is updated");
+        final DatabaseReference popularityReferenceDrink = coolPointDrinkReference.child(placeName).child("popularity");
+        Map<String, Object> coolspotMap = new HashMap<>();
+        coolspotMap.put("timestamp", timestamp);
+        coolPointDrinkReference.child(placeName).updateChildren(coolspotMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                popularityReferenceDrink.runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Long currentPopularityValue = mutableData.getValue(Long.class);
+                        if (currentPopularityValue == null) {
+                            mutableData.setValue(1);
+                        } else {
+                            mutableData.setValue(currentPopularityValue + 1);
+                        }
+
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    private void updateCoolspotChild(long timestamp, String placeName) {
+        Log.d(TAG, "updateCoolspotChild child is updated");
+
+        final DatabaseReference popularityReference = databaseReference.child("Coolspot").child(placeName).child("popularity");
+
+        Map<String, Object> coolspotMap = new HashMap<>();
+        coolspotMap.put("timestamp", timestamp);
+        coolSpotReference.child(placeName).updateChildren(coolspotMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                popularityReference.runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        Long currentPopularityValue = mutableData.getValue(Long.class);
+                        if (currentPopularityValue == null) {
+                            mutableData.setValue(1);
+                        } else {
+                            mutableData.setValue(currentPopularityValue + 1);
+                        }
+
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
