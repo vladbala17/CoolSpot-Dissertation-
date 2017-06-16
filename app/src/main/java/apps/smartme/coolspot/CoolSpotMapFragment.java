@@ -69,9 +69,8 @@ import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
 import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.Coolspot;
-import apps.smartme.coolspot.domain.CoolspotCoolpoint;
 import apps.smartme.coolspot.domain.CoolspotLocation;
-import apps.smartme.coolspot.domain.CoolspotUser;
+import apps.smartme.coolspot.domain.UserCoolspot;
 
 /**
  * Created by vlad on 26.03.2017.
@@ -957,6 +956,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                             DEFAULT_ZOOM));
                     final long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
                     final Coolspot coolspot = new Coolspot(placeName, timestamp, markerLatLng.latitude, markerLatLng.longitude, 1);
+                    final UserCoolspot userCoolspot = new UserCoolspot(placeName, 1, timestamp, coolPointFirst, coolPointSecond);
                     coolSpotReference.child(placeName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
@@ -965,15 +965,15 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                                 updateCoolPointDrinkChild(timestamp, placeName);
                                 updateCoolpointFirst(placeName, coolPointFirst);
                                 updateCoolspotUserChild(placeName);
-                                updateUserLocationChild(placeName);
-                                updateUserLocationDateChild(timestamp, placeName);
+                                updateUserLocationChild(placeName, userCoolspot);
+//                                updateUserLocationDateChild(timestamp, placeName);
                             } else {
                                 addCoolspotChild(placeName, coolspot);
                                 addCoolspotDrinkChild(placeName, coolspot);
                                 addCoolspotCoolpoint(placeName, coolPointFirst, coolPointSecond);
                                 addCoolspotUsers(placeName, "Vlad Bala");
-                                addUserLocationChild(placeName);
-                                addUserLocationDateChild(placeName, timestamp);
+                                addUserLocationChild(placeName,userCoolspot);
+//                                addUserLocationDateChild(placeName, timestamp);
                             }
                         }
 
@@ -1021,10 +1021,10 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void addUserLocationChild(String placeName) {
+    private void addUserLocationChild(String placeName,UserCoolspot userCoolspot) {
         DatabaseReference usersLocationReferenceDefine = databaseReference.child("UserLocation");
         Map<String, Object> map = new HashMap<>();
-        map.put(placeName, 1);
+        map.put(placeName, userCoolspot);
         usersLocationReferenceDefine.updateChildren(map);
     }
 
@@ -1042,9 +1042,16 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         usersLocationDateReference.updateChildren(coolspotMap);
     }
 
-    private void updateUserLocationChild(String placeName) {
+    private void updateUserLocationChild(String placeName, UserCoolspot userCoolspot) {
         DatabaseReference usersLocationReference = databaseReference.child("UserLocation").child(placeName);
-        usersLocationReference.runTransaction(new Transaction.Handler() {
+        DatabaseReference usersLocationHitsReference = databaseReference.child("UserLocation").child(placeName).child("hits");
+        Map<String, Object> map = new HashMap<>();
+        map.put("timestamp", userCoolspot.getTimestamp());
+        map.put("coolpointFirst", userCoolspot.getCoolpointFirst());
+        map.put("coolpointSecond", userCoolspot.getCoolpointSecond());
+        map.put("name",userCoolspot.getName());
+        usersLocationReference.updateChildren(map);
+        usersLocationHitsReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer currentCoolpointValue = mutableData.getValue(Integer.class);

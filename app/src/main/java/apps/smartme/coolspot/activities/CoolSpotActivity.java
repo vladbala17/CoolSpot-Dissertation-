@@ -209,6 +209,8 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
                 startActivity(intent);
                 break;
             case R.id.nav_history_places:
+                Intent intent2 = new Intent(this, HistoryActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.nav_settings:
                 break;

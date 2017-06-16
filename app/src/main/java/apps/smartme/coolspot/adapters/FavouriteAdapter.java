@@ -5,24 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.domain.Coolpoint;
+import apps.smartme.coolspot.domain.UserCoolspot;
 
 /**
  * Created by vlad on 15.05.2017.
  */
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyViewHolder> {
-    private List<Coolpoint> styleList;
-    private ArrayList<Coolpoint> arraylist;
+    private List<UserCoolspot> styleList;
+    private ArrayList<UserCoolspot> arraylist;
 
-    public FavouriteAdapter(List<Coolpoint> styleList) {
+
+    public FavouriteAdapter(List<UserCoolspot> styleList) {
         this.styleList = styleList;
-        this.arraylist = new ArrayList<Coolpoint>();
+        this.arraylist = new ArrayList<UserCoolspot>();
         this.arraylist.addAll(styleList);
     }
 
@@ -31,13 +37,18 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_favourites_row_item, parent, false);
 
+
         return new FavouriteAdapter.MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(FavouriteAdapter.MyViewHolder holder, int position) {
-        Coolpoint style = styleList.get(position);
-        holder.image.setImageResource(R.drawable.ic_dance);
+//        Coolpoint style = styleList.get(position);
+
+        holder.locationImageView.setImageResource(R.drawable.ic_dance);
+        holder.locationHitsTextView.setText(String.valueOf(styleList.get(position).getHits()));
+        holder.locationNameTextView.setText(styleList.get(position).getName());
+        holder.lastActivityTextView.setText(convertTime(styleList.get(position).getTimestamp()));
     }
 
     @Override
@@ -46,12 +57,23 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView image;
+        private ImageView locationImageView;
+        private TextView locationNameTextView;
+        private TextView lastActivityTextView;
+        private TextView locationHitsTextView;
 
         public MyViewHolder(View view) {
             super(view);
-            image = (ImageView) view.findViewById(R.id.location_iv);
+            locationImageView = (ImageView) view.findViewById(R.id.location_iv);
+            locationNameTextView = (TextView) view.findViewById(R.id.location_value_tv);
+            lastActivityTextView = (TextView) view.findViewById(R.id.location_date_value_tv);
+            locationHitsTextView = (TextView) view.findViewById(R.id.location_visits_value_tv);
         }
     }
 
+    public String convertTime(long time) {
+        Date date = new Date(time);
+        Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+        return format.format(date);
+    }
 }
