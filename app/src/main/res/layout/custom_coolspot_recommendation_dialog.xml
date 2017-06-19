@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/side_nav_menu"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/place_details_name"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/side_nav_bar"
+        android:gravity="center"
+        android:text="Place Recommendation"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/iv_coolspot_popular_coolpoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place_details_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_rock_music" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_coolspot_popular_coolpoint"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_name_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:textSize="30sp"
+        android:text="Cluj Arena" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_popularity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_name_value"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_popularity_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_popularity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="210 peopke are there" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_mutual_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_popularity_value"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tv_coolspot_mutual_friends_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_mutual_friends"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="3 of your friends are there" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coolspot_mutual_friends_value"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/keep_looking_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/side_nav_bar"
+            android:text="Recommend Another" />
+
+        <Button
+            android:id="@+id/take_me_there_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/side_nav_bar"
+            android:text="Take me there" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

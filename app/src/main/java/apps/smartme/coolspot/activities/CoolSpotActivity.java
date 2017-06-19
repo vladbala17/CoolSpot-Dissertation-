@@ -62,7 +62,6 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cool_spot);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
         coolPointReference = databaseReference.child("Coolpoint");
 

@@ -19,8 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -64,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import apps.smartme.coolspot.dialogs.CoolspotRecommendationDialog;
 import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
 import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
 import apps.smartme.coolspot.dialogs.PlacePickerDialog;
@@ -89,7 +89,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final String SELECTED_SECOND_COOLPOINT = "selected_second_coolpoint";
     private static final long TWO_HOURS = 120 * 60 * 1000;
 
-    //Firebase
+    //Firebase nodes
+    public static final String COOLPOINT_DRINK = "CoolpointDrink";
+    public static final String COOLPOINT_NERD = "CoolpointNerd";
+    public static final String COOLPOINT_GIRL = "CoolpointGirl";
+    public static final String COOLPOINT_MUSIC = "CoolpointMusic";
+    public static final String COOLSPOT = "Coolspot";
+
+    //Firebase references
     DatabaseReference databaseReference;
     DatabaseReference coolPointReference;
     DatabaseReference coolspotReference;
@@ -120,7 +127,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     List<Coolpoint> coolpointMusicList = new ArrayList<>();
     List<Coolpoint> coolpointFunList = new ArrayList<>();
     List<Coolpoint> coolpointGirlsList = new ArrayList<>();
-    ImageButton recommendButton;
+    ImageView recommendButton;
 
 
     private Location mLastKnownLocation;
@@ -148,14 +155,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final String SELECTED_ITEM_NAME = "selected_item_name";
 
 
-    public static CoolSpotMapFragment newInstance(List<CoolspotLocation> list) {
-
-        Bundle args = new Bundle();
-        CoolSpotMapFragment fragment = new CoolSpotMapFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -167,18 +166,20 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
         mGoogleApiClient.connect();
+        initFirebaseReferences();
+    }
 
+    private void initFirebaseReferences() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
-//        coolPointReference = databaseReference.child("Coolpoint");
-        coolPointDrinkReference = databaseReference.child("CoolpointDrink");
-        populateMapDrinkReference = databaseReference.child("CoolpointDrink");
-        coolPointNerdReference = databaseReference.child("CoolpointNerd");
-        populateMapNerdReference = databaseReference.child("CoolpointNerd");
-        coolPointGirlReference = databaseReference.child("CoolpointGirl");
-        populateMapGirlReference = databaseReference.child("CoolpointGirl");
-        coolPointMusicReference = databaseReference.child("CoolpointMusic");
-        populateMapMusicReference = databaseReference.child("CoolpointMusic");
-        coolSpotReference = databaseReference.child("Coolspot");
+        coolPointDrinkReference = databaseReference.child(COOLPOINT_DRINK);
+        populateMapDrinkReference = databaseReference.child(COOLPOINT_DRINK);
+        coolPointNerdReference = databaseReference.child(COOLPOINT_NERD);
+        populateMapNerdReference = databaseReference.child(COOLPOINT_NERD);
+        coolPointGirlReference = databaseReference.child(COOLPOINT_GIRL);
+        populateMapGirlReference = databaseReference.child(COOLPOINT_GIRL);
+        coolPointMusicReference = databaseReference.child(COOLPOINT_MUSIC);
+        populateMapMusicReference = databaseReference.child(COOLPOINT_MUSIC);
+        coolSpotReference = databaseReference.child(COOLSPOT);
     }
 
 
@@ -418,55 +419,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         mapMusicValueEventListener = populateMapValueEventListener;
     }
 
-//    private void getCoolspotsFromFirebase() {
-//        ChildEventListener childEventCoolspotListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                Log.d(TAG, "====FIREBASE IN ACTION======");
-//                switch (dataSnapshot.getKey()) {
-//                    case "drink":
-//                        collectDrinkCoolSpots((Map<String, Object>) dataSnapshot.getValue());
-//                        break;
-//                    case "girls":
-//                        collectGirlsCoolSpots((Map<String, Object>) dataSnapshot.getValue());
-//                        break;
-//                    case "fun":
-//                        collectFunCoolSpots((Map<String, Object>) dataSnapshot.getValue());
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        coolPointReference.addChildEventListener(childEventCoolspotListener);
-//        coolPointChildEventListener = childEventCoolspotListener;
-//    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//
-//        if (coolPointChildEventListener != null) {
-//            coolPointReference.removeEventListener(coolPointChildEventListener);
-//        }
+        removeFirebaseListeners();
+    }
+
+    private void removeFirebaseListeners() {
         if (coolPointDrinkChildEventListener != null) {
             coolPointDrinkReference.removeEventListener(coolPointDrinkChildEventListener);
         }
@@ -507,11 +467,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View view = layoutInflater.inflate(R.layout.map_fragment, viewGroup, false);
-        recommendButton = (ImageButton) view.findViewById(R.id.recommend_btn);
+        recommendButton = (ImageView) view.findViewById(R.id.recommend_btn);
         recommendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
+
+                CoolspotRecommendationDialog coolspotRecommendationDialog = CoolspotRecommendationDialog.newInstance("vlad", "vlad", 1, 1);
+                coolspotRecommendationDialog.show(getActivity().getSupportFragmentManager(), "placeRecommendation");
             }
         });
 
@@ -527,7 +490,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "You are here", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "You are here", Toast.LENGTH_SHORT).show();
                 showCurrentPlace();
 
             }
@@ -535,10 +498,12 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         return view;
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady()");
         mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         //  mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -663,7 +628,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-        Toast.makeText(getActivity(), "onConnected", Toast.LENGTH_SHORT).show();
 
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
@@ -774,47 +738,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void collectDrinkCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointDrinkList.add(coolpoint);
-            Log.d(TAG, "list1 is loaded");
-        }
-    }
-
-    private void collectGirlsCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointGirlsList.add(coolpoint);
-            Log.d(TAG, "list2 is loaded");
-        }
-    }
-
-    private void collectFunCoolSpots(Map<String, Object> drinkCoolspots) {
-
-        for (Map.Entry<String, Object> entry : drinkCoolspots.entrySet()) {
-            Map singleCoolPoint = (Map) entry.getValue();
-            Coolpoint coolpoint = new Coolpoint();
-            coolpoint.setName((String) singleCoolPoint.get("name"));
-            coolpoint.setLatitude((Double) singleCoolPoint.get("latitude"));
-            coolpoint.setLongitude((Double) singleCoolPoint.get("longitude"));
-            coolpoint.setCount((long) singleCoolPoint.get("count"));
-            coolpointFunList.add(coolpoint);
-            Log.d(TAG, "list3 is loaded");
-        }
-    }
 
     public void populateMapWithDrinkLocations() {
         Log.d(TAG, "populateMapWithDrinkLocations");
@@ -972,7 +895,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                                 addCoolspotDrinkChild(placeName, coolspot);
                                 addCoolspotCoolpoint(placeName, coolPointFirst, coolPointSecond);
                                 addCoolspotUsers(placeName, "Vlad Bala");
-                                addUserLocationChild(placeName,userCoolspot);
+                                addUserLocationChild(placeName, userCoolspot);
 //                                addUserLocationDateChild(placeName, timestamp);
                             }
                         }
@@ -994,14 +917,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private void addCoolspotChild(final String placeName, Coolspot coolspot) {
         Map<String, Object> map = new HashMap<>();
         map.put(placeName, coolspot);
-        DatabaseReference dbref = databaseReference.child("Coolspot");
+        DatabaseReference dbref = databaseReference.child(COOLSPOT);
         dbref.updateChildren(map);
     }
 
     private void addCoolspotDrinkChild(String placeName, Coolspot coolspot) {
         Map<String, Object> map = new HashMap<>();
         map.put(placeName, coolspot);
-        DatabaseReference dbref = databaseReference.child("CoolpointDrink");
+        DatabaseReference dbref = databaseReference.child(COOLPOINT_DRINK);
         dbref.updateChildren(map);
     }
 
@@ -1021,7 +944,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void addUserLocationChild(String placeName,UserCoolspot userCoolspot) {
+    private void addUserLocationChild(String placeName, UserCoolspot userCoolspot) {
         DatabaseReference usersLocationReferenceDefine = databaseReference.child("UserLocation");
         Map<String, Object> map = new HashMap<>();
         map.put(placeName, userCoolspot);
@@ -1049,7 +972,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         map.put("timestamp", userCoolspot.getTimestamp());
         map.put("coolpointFirst", userCoolspot.getCoolpointFirst());
         map.put("coolpointSecond", userCoolspot.getCoolpointSecond());
-        map.put("name",userCoolspot.getName());
+        map.put("name", userCoolspot.getName());
         usersLocationReference.updateChildren(map);
         usersLocationHitsReference.runTransaction(new Transaction.Handler() {
             @Override
@@ -1133,7 +1056,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private void updateCoolspotChild(long timestamp, String placeName) {
         Log.d(TAG, "updateCoolspotChild child is updated");
 
-        final DatabaseReference popularityReference = databaseReference.child("Coolspot").child(placeName).child("popularity");
+        final DatabaseReference popularityReference = databaseReference.child(COOLSPOT).child(placeName).child("popularity");
 
         Map<String, Object> coolspotMap = new HashMap<>();
         coolspotMap.put("timestamp", timestamp);
@@ -1164,7 +1087,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        coolSpotReference = databaseReference.child("Coolspot").child(marker.getTitle());
+        coolSpotReference = databaseReference.child(COOLSPOT).child(marker.getTitle());
         ValueEventListener singleCoolSpotValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
