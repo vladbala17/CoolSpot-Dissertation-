@@ -28,7 +28,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
 
     public FavouriteAdapter(List<UserCoolspot> styleList) {
         this.styleList = styleList;
-        this.arraylist = new ArrayList<UserCoolspot>();
+        this.arraylist = new ArrayList<>();
         this.arraylist.addAll(styleList);
     }
 
@@ -37,13 +37,11 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyVi
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_favourites_row_item, parent, false);
 
-
         return new FavouriteAdapter.MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(FavouriteAdapter.MyViewHolder holder, int position) {
-//        Coolpoint style = styleList.get(position);
 
         holder.locationImageView.setImageResource(R.drawable.ic_dance);
         holder.locationHitsTextView.setText(String.valueOf(styleList.get(position).getHits()));

@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;

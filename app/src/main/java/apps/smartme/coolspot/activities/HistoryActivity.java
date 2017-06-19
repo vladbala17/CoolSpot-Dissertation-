@@ -21,6 +21,7 @@ import apps.smartme.coolspot.adapters.RecyclerTouchListener;
 import apps.smartme.coolspot.domain.UserCoolspot;
 
 public class HistoryActivity extends AppCompatActivity {
+    public static final String USER_LOCATION = "UserLocation";
     RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
     private List<UserCoolspot> userCoolspotList = new ArrayList<>();
@@ -32,7 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        userCoolspotReference = databaseReference.child("UserLocation");
+        userCoolspotReference = databaseReference.child(USER_LOCATION);
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

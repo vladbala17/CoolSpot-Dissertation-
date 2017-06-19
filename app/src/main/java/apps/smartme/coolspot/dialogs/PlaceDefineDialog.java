@@ -199,27 +199,6 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
         return dialog;
     }
 
-
-    private void prepareStyleData() {
-//        Coolpoint style = new Coolpoint("Cool", 2015);
-//        styleList.add(style);
-//        Coolpoint style1 = new Coolpoint("Cheap", 2015);
-//        styleList.add(style1);
-//        Coolpoint style2 = new Coolpoint("Expensive", 2015);
-//        styleList.add(style2);
-//        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
-//        styleList.add(style3);
-//        Coolpoint style4 = new Coolpoint("Nerds", 2015);
-//        styleList.add(style4);
-//        Coolpoint style5 = new Coolpoint("Shots", 2015);
-//        styleList.add(style5);
-//        Coolpoint style6 = new Coolpoint("Concert", 2015);
-//        styleList.add(style6);
-
-
-//        mAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;

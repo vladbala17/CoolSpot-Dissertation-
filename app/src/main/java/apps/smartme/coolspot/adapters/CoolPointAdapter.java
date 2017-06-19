@@ -33,7 +33,6 @@ public class CoolPointAdapter extends CursorAdapter {
     public CoolPointAdapter(Context context, Cursor cursor, List<String> items) {
 
         super(context, cursor, false);
-
         this.items = items;
     }
 
@@ -51,20 +50,41 @@ public class CoolPointAdapter extends CursorAdapter {
             case "girls":
                 image.setImageResource(R.drawable.ic_girls);
                 break;
+            case "nerd":
+                image.setImageResource(R.drawable.ic_nerd);
+                break;
+            case "cheap":
+                image.setImageResource(R.drawable.ic_cheap);
+                break;
+            case "crowded":
+                image.setImageResource(R.drawable.ic_crowded);
+                break;
+            case "dance":
+                image.setImageResource(R.drawable.ic_karaoke);
+                break;
+            case "computer":
+                image.setImageResource(R.drawable.ic_computer);
+                break;
+            case "expensive":
+                image.setImageResource(R.drawable.ic_expensive);
+                break;
+            case "bored":
+                image.setImageResource(R.drawable.ic_bored);
+                break;
+            default:
+                image.setImageResource(R.drawable.ic_free_drinks);
+                break;
         }
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View view = inflater.inflate(R.layout.item_coolpoint_search, parent, false);
 
         text = (TextView) view.findViewById(R.id.tv_coolpoint_name);
         image = (ImageView) view.findViewById(R.id.iv_coolpoint_image);
         return view;
-
     }
 
 }

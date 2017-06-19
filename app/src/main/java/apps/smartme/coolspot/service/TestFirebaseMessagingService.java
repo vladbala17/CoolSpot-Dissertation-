@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.activities.CoolSpotActivity;
 
 public class TestFirebaseMessagingService extends FirebaseMessagingService {

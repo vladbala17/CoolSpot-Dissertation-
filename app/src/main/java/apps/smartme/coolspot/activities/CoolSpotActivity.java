@@ -38,14 +38,17 @@ import java.util.List;
 import java.util.Locale;
 
 import apps.smartme.coolspot.CoolSpotMapFragment;
-import apps.smartme.coolspot.CustomTypefaceSpan;
-import apps.smartme.coolspot.FontTypeface;
+import apps.smartme.coolspot.helpers.CustomTypefaceSpan;
+import apps.smartme.coolspot.helpers.FontTypeface;
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.CoolPointAdapter;
 
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SearchView.OnCloseListener {
 
     private static final String TAG = "CoolSpotActivity";
+    public static final String COOLPOINT = "Coolpoint";
+    public static final String USER_ID_TOKEN = "userId";
+
     private ImageButton logoutButton;
     CoolSpotMapFragment coolSpotMapFragment;
     SearchManager manager;
@@ -63,7 +66,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cool_spot);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        coolPointReference = databaseReference.child("Coolpoint");
+        coolPointReference = databaseReference.child(COOLPOINT);
 
         coolPointSearchView = (SearchView) findViewById(R.id.sv_coolpoint);
         coolPointSearchView.setOnQueryTextListener(this);
@@ -72,18 +75,16 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         coolPointSearchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
 
-
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras == null) {
                 userID = null;
             } else {
-                userID = extras.getString("userId");
+                userID = extras.getString(USER_ID_TOKEN);
             }
         } else {
-            userID = (String) savedInstanceState.getSerializable("userId");
+            userID = (String) savedInstanceState.getSerializable(USER_ID_TOKEN);
         }
-        Log.d(TAG, "============================" + userID + "===================");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -134,7 +135,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         ChildEventListener childEventCoolspotListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "====FIREBASE IN ACTION======");
+                Log.d(TAG, "onChildAdded search list populated");
                 coolpointList.add(dataSnapshot.getKey());
                 arraylist.add(dataSnapshot.getKey());
             }
@@ -202,14 +203,15 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.nav_fav_places:
-                Intent intent = new Intent(this, FavouritesActivity.class);
+                intent = new Intent(this, FavouritesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_history_places:
-                Intent intent2 = new Intent(this, HistoryActivity.class);
-                startActivity(intent2);
+                intent = new Intent(this, HistoryActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_settings:
                 break;

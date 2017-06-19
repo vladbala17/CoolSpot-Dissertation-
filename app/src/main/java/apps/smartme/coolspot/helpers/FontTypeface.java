@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.helpers;
 
 import android.content.Context;
 import android.graphics.Typeface;

@@ -41,12 +41,6 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
         String coolpoint = styleList.get(position);
         holder.title.setText(coolpoint);
         switch (coolpoint) {
-            case "cheap":
-                holder.image.setImageResource(R.drawable.ic_cheap);
-                break;
-            case "expensive":
-                holder.image.setImageResource(R.drawable.ic_expensive);
-                break;
             case "drink":
                 holder.image.setImageResource(R.drawable.ic_free_drinks);
                 break;
@@ -55,6 +49,30 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
                 break;
             case "girls":
                 holder.image.setImageResource(R.drawable.ic_girls);
+                break;
+            case "nerd":
+                holder.image.setImageResource(R.drawable.ic_nerd);
+                break;
+            case "cheap":
+                holder.image.setImageResource(R.drawable.ic_cheap);
+                break;
+            case "crowded":
+                holder.image.setImageResource(R.drawable.ic_crowded);
+                break;
+            case "dance":
+                holder.image.setImageResource(R.drawable.ic_karaoke);
+                break;
+            case "computer":
+                holder.image.setImageResource(R.drawable.ic_computer);
+                break;
+            case "expensive":
+                holder.image.setImageResource(R.drawable.ic_expensive);
+                break;
+            case "bored":
+                holder.image.setImageResource(R.drawable.ic_bored);
+                break;
+            default:
+                holder.image.setImageResource(R.drawable.ic_free_drinks);
                 break;
         }
     }

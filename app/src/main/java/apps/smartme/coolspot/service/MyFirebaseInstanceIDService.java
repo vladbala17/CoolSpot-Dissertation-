@@ -1,4 +1,4 @@
-package apps.smartme.coolspot;
+package apps.smartme.coolspot.service;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

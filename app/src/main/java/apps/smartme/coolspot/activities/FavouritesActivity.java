@@ -23,6 +23,7 @@ import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.UserCoolspot;
 
 public class FavouritesActivity extends AppCompatActivity {
+    public static final String USER_LOCATION = "UserLocation";
     RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
     private List<UserCoolspot> userCoolspotList = new ArrayList<>();
@@ -34,7 +35,7 @@ public class FavouritesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        userCoolspotReference = databaseReference.child("UserLocation");
+        userCoolspotReference = databaseReference.child(USER_LOCATION);
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -68,7 +69,6 @@ public class FavouritesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favourites);
         mRecyclerView = (RecyclerView) findViewById(R.id.favourites_recycler_view);
         mAdapter = new FavouriteAdapter(userCoolspotList);
-        prepareStyleData();
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.setStackFromEnd(true);
@@ -95,31 +95,6 @@ public class FavouritesActivity extends AppCompatActivity {
         if (userCoolspotChildEventListener != null) {
             userCoolspotReference.removeEventListener(userCoolspotChildEventListener);
         }
-    }
-
-    private void prepareStyleData() {
-
-//        Coolpoint style = new Coolpoint("Cool", 2015);
-//        styleList.add(style);
-//        Coolpoint style1 = new Coolpoint("Cheap", 2015);
-//        styleList.add(style1);
-//        Coolpoint style2 = new Coolpoint("Expensive", 2015);
-//        styleList.add(style2);
-//        Coolpoint style3 = new Coolpoint("Cool girls", 2015);
-//        styleList.add(style3);
-//        Coolpoint style4 = new Coolpoint("Nerds", 2015);
-//        styleList.add(style4);
-//        Coolpoint style5 = new Coolpoint("Shots", 2015);
-//        styleList.add(style5);
-//        Coolpoint style6 = new Coolpoint("Concert", 2015);
-//        styleList.add(style6);
-//        Coolpoint style7 = new Coolpoint("Lemne", 2015);
-//        styleList.add(style7);
-//        Coolpoint style8 = new Coolpoint("Acadele", 2015);
-//        styleList.add(style8);
-
-
-//       mAdapter.notifyDataSetChanged();
     }
 
     @Override
