@@ -13,6 +13,7 @@ import android.util.TypedValue;
  */
 @SuppressLint("ParcelCreator")
 public class CustomTypefaceSpan extends TypefaceSpan {
+
     private final Typeface newType;
     private final int newSize;
 

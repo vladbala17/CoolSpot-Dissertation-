@@ -24,10 +24,11 @@ import com.google.firebase.auth.FirebaseUser;
 import apps.smartme.coolspot.R;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = LoginActivity.class.getSimpleName();
-    private String userId;
 
-    CallbackManager callbackManager;
+    private static final String TAG = LoginActivity.class.getSimpleName();
+
+    private CallbackManager callbackManager;
+    private String userId;
     private FirebaseAuth mAuth;
 
     @Override

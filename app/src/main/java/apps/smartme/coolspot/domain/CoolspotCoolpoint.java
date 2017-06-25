@@ -5,6 +5,7 @@ package apps.smartme.coolspot.domain;
  */
 
 public class CoolspotCoolpoint {
+
     private String coolpointFirst;
     private String coolpointSecond;
 

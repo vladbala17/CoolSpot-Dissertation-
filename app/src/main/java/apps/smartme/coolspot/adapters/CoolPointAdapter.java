@@ -26,7 +26,6 @@ import apps.smartme.coolspot.domain.Coolpoint;
 public class CoolPointAdapter extends CursorAdapter {
 
     private List<String> items;
-
     private TextView text;
     private ImageView image;
 

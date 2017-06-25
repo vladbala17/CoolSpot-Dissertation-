@@ -25,6 +25,7 @@ import apps.smartme.coolspot.domain.Coolpoint;
  */
 
 public class CoolspotRecommendationDialog extends DialogFragment implements View.OnClickListener {
+
     private static final String NAME_KEY = "coolpointName";
     private static final String COOLPOINT_KEY = "coolpointImage";
     private static final String COOLPOINT_POPULARITY_KEY = "coolpointPopularity";

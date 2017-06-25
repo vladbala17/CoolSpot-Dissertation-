@@ -46,21 +46,16 @@ import apps.smartme.coolspot.domain.CoolspotCoolpoint;
  */
 
 public class PlaceDetailsDialog extends DialogFragment {
-    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
 
-    DatabaseReference databaseReference;
-    DatabaseReference coolSpotCoolpointsReference;
-    DatabaseReference coolSpotUsersReference;
-    DatabaseReference userFriendsReference;
-    ChildEventListener coolSpotCoolpointChildEventListener;
-    ChildEventListener coolSpotUsersChildEventListener;
-    ChildEventListener userFriendsChildEventListener;
+    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
 
     public static final String PLACE_NAME = "placeName";
     public static final String PLACE_POPULARITY = "placePopularity";
     public static final String PLACE_TIMESTAMP = "placeTimestamp";
     public static final String PLACE_USERS = "placeUsers";
+
     private final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
     private List<String> coolspotCoolPointList;
     private ArrayList<String> coolspotUsers = new ArrayList<>();
     private ArrayList<String> userFriends = new ArrayList<>();
@@ -71,6 +66,14 @@ public class PlaceDetailsDialog extends DialogFragment {
     private TextView coolPointsNumberTextView;
     private TextView mutualFriendsNumberTextView;
     private StyleDialogAdapter mAdapter;
+
+    private DatabaseReference databaseReference;
+    private DatabaseReference coolSpotCoolpointsReference;
+    private DatabaseReference coolSpotUsersReference;
+    private DatabaseReference userFriendsReference;
+    private ChildEventListener coolSpotCoolpointChildEventListener;
+    private ChildEventListener coolSpotUsersChildEventListener;
+    private ChildEventListener userFriendsChildEventListener;
 
     public static PlaceDetailsDialog newInstance(String coolSpotName, long timeStamp, String popularity) {
         PlaceDetailsDialog f = new PlaceDetailsDialog();
@@ -123,7 +126,7 @@ public class PlaceDetailsDialog extends DialogFragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        } ;
+        };
 
 //        ValueEventListener valueEventListener = new ValueEventListener() {
 //            @Override
@@ -182,7 +185,7 @@ public class PlaceDetailsDialog extends DialogFragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 userFriends.add(dataSnapshot.getKey());
-                mutualFriendsNumber(userFriends,coolspotUsers);
+                mutualFriendsNumber(userFriends, coolspotUsers);
             }
 
             @Override
@@ -262,7 +265,6 @@ public class PlaceDetailsDialog extends DialogFragment {
         }
 
 
-
     }
 
     private void prepareStyleData() {
@@ -301,9 +303,9 @@ public class PlaceDetailsDialog extends DialogFragment {
         if (Hours.hoursBetween(lastModified, present)
                 .isLessThan(Hours.hours(2))) {
             longAgo = String.valueOf(Hours.hoursBetween(present, lastModified).getHours()) + "hours ";
-            longAgo = longAgo +" " +String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
+            longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
         } else {
-            longAgo = longAgo+" " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
+            longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
         }
         Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
         return longAgo;
@@ -330,6 +332,6 @@ public class PlaceDetailsDialog extends DialogFragment {
             }
         }
         mutualFriendsNumberTextView.setText(String.valueOf(count));
-        return ;
+        return;
     }
 }

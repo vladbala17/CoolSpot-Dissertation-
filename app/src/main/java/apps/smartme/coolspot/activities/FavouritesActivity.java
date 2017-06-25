@@ -23,13 +23,16 @@ import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.UserCoolspot;
 
 public class FavouritesActivity extends AppCompatActivity {
+
     public static final String USER_LOCATION = "UserLocation";
-    RecyclerView mRecyclerView;
+
+    private RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
     private List<UserCoolspot> userCoolspotList = new ArrayList<>();
-    DatabaseReference databaseReference;
-    DatabaseReference userCoolspotReference;
-    ChildEventListener userCoolspotChildEventListener;
+
+    private DatabaseReference databaseReference;
+    private DatabaseReference userCoolspotReference;
+    private ChildEventListener userCoolspotChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

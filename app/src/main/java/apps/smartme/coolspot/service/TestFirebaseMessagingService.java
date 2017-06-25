@@ -17,6 +17,7 @@ import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.activities.CoolSpotActivity;
 
 public class TestFirebaseMessagingService extends FirebaseMessagingService {
+
     private static final String TAG = "TestFbMessagingService";
 
     /**
@@ -97,7 +98,7 @@ public class TestFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_premium)
                 .setContentTitle("FCM Message")

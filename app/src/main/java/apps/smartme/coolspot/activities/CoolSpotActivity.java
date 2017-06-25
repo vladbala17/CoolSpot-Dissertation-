@@ -46,20 +46,21 @@ import apps.smartme.coolspot.adapters.CoolPointAdapter;
 public class CoolSpotActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, SearchView.OnCloseListener {
 
     private static final String TAG = "CoolSpotActivity";
+
     public static final String COOLPOINT = "Coolpoint";
     public static final String USER_ID_TOKEN = "userId";
 
     private ImageButton logoutButton;
-    CoolSpotMapFragment coolSpotMapFragment;
-    SearchManager manager;
-    SearchView coolPointSearchView;
-    List<String> coolpointList = new ArrayList<>();
-    List<String> arraylist = new ArrayList<>();
-    String userID;
+    private CoolSpotMapFragment coolSpotMapFragment;
+    private SearchManager manager;
+    private SearchView coolPointSearchView;
+    private List<String> coolpointList = new ArrayList<>();
+    private List<String> arraylist = new ArrayList<>();
+    private String userID;
 
-    DatabaseReference databaseReference;
-    DatabaseReference coolPointReference;
-    ChildEventListener coolPointChildEventListener;
+    private DatabaseReference databaseReference;
+    private DatabaseReference coolPointReference;
+    private ChildEventListener coolPointChildEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

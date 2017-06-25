@@ -24,12 +24,15 @@ import apps.smartme.coolspot.adapters.PlacePickerAdapter;
  */
 
 public class PlacePickerDialog extends DialogFragment implements AdapterView.OnItemClickListener {
+
     private static final String PLACE_KEY = "place";
+
     public static final String SELECTED_ITEM_POSITION = "selected_item_position";
     public static final int PLACE_DEFINE_DIALOG = 2;
     public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
     public static final String SELECTED_ITEM_NAME = "selected_item_name";
-    ListView placePickerListView;
+
+    private ListView placePickerListView;
 
 
     public static PlacePickerDialog newInstance(String[] placesList) {

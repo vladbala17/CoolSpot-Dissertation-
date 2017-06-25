@@ -22,6 +22,7 @@ import apps.smartme.coolspot.domain.UserCoolspot;
  */
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.MyViewHolder> {
+
     private List<UserCoolspot> styleList;
     private ArrayList<UserCoolspot> arraylist;
 

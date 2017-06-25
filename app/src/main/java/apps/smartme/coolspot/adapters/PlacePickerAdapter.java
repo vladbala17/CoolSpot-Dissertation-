@@ -17,6 +17,7 @@ import apps.smartme.coolspot.R;
  */
 
 public class PlacePickerAdapter extends BaseAdapter {
+
     private Context mContext;
     private LayoutInflater mInflater;
     private CharSequence[] places;
@@ -54,7 +55,7 @@ public class PlacePickerAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.placePicker = (TextView) convertView
                     .findViewById(R.id.place_picker_title);
-            Typeface type = Typeface.createFromAsset(mContext.getAssets(),"fonts/android.ttf");
+            Typeface type = Typeface.createFromAsset(mContext.getAssets(), "fonts/android.ttf");
             holder.placePicker.setTypeface(type);
             convertView.setTag(holder);
         } else {

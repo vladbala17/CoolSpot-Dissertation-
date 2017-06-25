@@ -5,6 +5,7 @@ package apps.smartme.coolspot.domain;
  */
 
 public class UserCoolspot {
+
     private String name;
     private int hits;
     private long timestamp;

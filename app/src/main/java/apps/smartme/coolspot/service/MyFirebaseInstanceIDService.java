@@ -13,7 +13,9 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
  */
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
+
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
+
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String SHARED_PREF = "ah_firebase";
 

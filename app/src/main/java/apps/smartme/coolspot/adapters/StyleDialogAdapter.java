@@ -19,6 +19,7 @@ import apps.smartme.coolspot.domain.Coolpoint;
  */
 
 public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.MyViewHolder> {
+
     private List<String> styleList;
     private ArrayList<String> arraylist;
 

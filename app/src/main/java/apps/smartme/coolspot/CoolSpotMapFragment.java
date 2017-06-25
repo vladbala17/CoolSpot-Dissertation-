@@ -78,10 +78,9 @@ import apps.smartme.coolspot.domain.UserCoolspot;
 
 public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
 
     private static final String TAG = CoolSpotMapFragment.class.getSimpleName();
+
     public static final int PLACE_PICKER_DIALOG = 1;
     public static final int PLACE_DEFINE_DIALOG = 2;
     public static final int PLACE_DEFINE_DIALOG_MARKER = 3;
@@ -97,47 +96,47 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final String COOLSPOT = "Coolspot";
 
     //Firebase references
-    DatabaseReference databaseReference;
-    DatabaseReference coolPointReference;
-    DatabaseReference coolspotReference;
-    DatabaseReference populateMapDrinkReference;
-    DatabaseReference populateMapNerdReference;
-    DatabaseReference populateMapGirlReference;
-    DatabaseReference populateMapMusicReference;
-    DatabaseReference coolSpotReference;
-    DatabaseReference coolPointDrinkReference;
-    DatabaseReference coolPointNerdReference;
-    DatabaseReference coolPointGirlReference;
-    DatabaseReference coolPointMusicReference;
-    ValueEventListener coolSpotValueEventListener;
-    ValueEventListener mapDrinkValueEventListener;
-    ValueEventListener mapNerdValueEventListener;
-    ValueEventListener mapGirlValueEventListener;
-    ValueEventListener mapMusicValueEventListener;
-    ChildEventListener coolPointChildEventListener;
-    ChildEventListener coolPointDrinkChildEventListener;
-    ChildEventListener coolPointNerdChildEventListener;
-    ChildEventListener coolPointGirlChildEventListener;
-    ChildEventListener coolPointMusicChildEventListener;
+    private DatabaseReference databaseReference;
+    private DatabaseReference coolPointReference;
+    private DatabaseReference coolspotReference;
+    private DatabaseReference populateMapDrinkReference;
+    private DatabaseReference populateMapNerdReference;
+    private DatabaseReference populateMapGirlReference;
+    private DatabaseReference populateMapMusicReference;
+    private DatabaseReference coolSpotReference;
+    private DatabaseReference coolPointDrinkReference;
+    private DatabaseReference coolPointNerdReference;
+    private DatabaseReference coolPointGirlReference;
+    private DatabaseReference coolPointMusicReference;
+    private ValueEventListener coolSpotValueEventListener;
+    private ValueEventListener mapDrinkValueEventListener;
+    private ValueEventListener mapNerdValueEventListener;
+    private ValueEventListener mapGirlValueEventListener;
+    private ValueEventListener mapMusicValueEventListener;
+    private ChildEventListener coolPointChildEventListener;
+    private ChildEventListener coolPointDrinkChildEventListener;
+    private ChildEventListener coolPointNerdChildEventListener;
+    private ChildEventListener coolPointGirlChildEventListener;
+    private ChildEventListener coolPointMusicChildEventListener;
 
 
-    List<Coolpoint> coolpointDrinkList = new ArrayList<>();
-    List<Coolpoint> coolpointNerdList = new ArrayList<>();
-    List<Coolpoint> coolpointGirlList = new ArrayList<>();
-    List<Coolpoint> coolpointMusicList = new ArrayList<>();
-    List<Coolpoint> coolpointFunList = new ArrayList<>();
-    List<Coolpoint> coolpointGirlsList = new ArrayList<>();
-    ImageView recommendButton;
+    private List<Coolpoint> coolpointDrinkList = new ArrayList<>();
+    private List<Coolpoint> coolpointNerdList = new ArrayList<>();
+    private List<Coolpoint> coolpointGirlList = new ArrayList<>();
+    private List<Coolpoint> coolpointMusicList = new ArrayList<>();
+    private List<Coolpoint> coolpointFunList = new ArrayList<>();
+    private List<Coolpoint> coolpointGirlsList = new ArrayList<>();
+    private ImageView recommendButton;
 
 
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
-    LocationRequest mLocationRequest;
+    private LocationRequest mLocationRequest;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 12;
-    LatLng latLng;
+    private LatLng latLng;
 
-    GoogleMap mMap;
+    private GoogleMap mMap;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 

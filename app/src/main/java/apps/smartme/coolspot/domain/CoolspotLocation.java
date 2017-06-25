@@ -5,6 +5,7 @@ package apps.smartme.coolspot.domain;
  */
 
 public class CoolspotLocation {
+
     private String name;
     private double latitude;
     private double longitude;

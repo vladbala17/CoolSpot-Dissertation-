@@ -37,21 +37,18 @@ import apps.smartme.coolspot.adapters.StyleDialogAdapter;
  */
 
 public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
-    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
 
-    DatabaseReference databaseReference;
-    DatabaseReference coolPointReference;
-    ChildEventListener coolPointChildEventListener;
+    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
 
     public static final String PLACE_NAME = "place_name";
     public static final String SELECTED_ITEM_POSITION = "selected_item_position";
     public static final String SELECTED_FIRST_COOLPOINT = "selected_first_coolpoint";
     public static final String SELECTED_SECOND_COOLPOINT = "selected_second_coolpoint";
-    private List<String> styleList = new ArrayList<>();
-    private List<String> selectedCoolpoints = new ArrayList<>();
 
     private RecyclerView recyclerView;
-    SearchView searchView;
+    private SearchView searchView;
+    private List<String> styleList = new ArrayList<>();
+    private List<String> selectedCoolpoints = new ArrayList<>();
     private StyleDialogAdapter mAdapter;
     private TextView placeDefineTextView;
     private Button markPlaceButton;
@@ -59,6 +56,10 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
     private ImageView coolPointImageViewSecond;
     private TextView coolPointTextViewFirst;
     private TextView coolPointTextViewSecond;
+
+    private DatabaseReference databaseReference;
+    private DatabaseReference coolPointReference;
+    private ChildEventListener coolPointChildEventListener;
 
     public static PlaceDefineDialog newInstance(String placeName, int position) {
         PlaceDefineDialog t = new PlaceDefineDialog();
