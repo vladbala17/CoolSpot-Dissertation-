@@ -23,7 +23,7 @@ import apps.smartme.coolspot.adapters.PlacePickerAdapter;
  * Created by vlad on 08.05.2017.
  */
 
-public class PlacePickerDialog extends DialogFragment implements AdapterView.OnItemClickListener {
+public class CoolspotPickerDialog extends DialogFragment implements AdapterView.OnItemClickListener {
 
     private static final String PLACE_KEY = "place";
 
@@ -35,8 +35,8 @@ public class PlacePickerDialog extends DialogFragment implements AdapterView.OnI
     private ListView placePickerListView;
 
 
-    public static PlacePickerDialog newInstance(String[] placesList) {
-        PlacePickerDialog f = new PlacePickerDialog();
+    public static CoolspotPickerDialog newInstance(String[] placesList) {
+        CoolspotPickerDialog f = new CoolspotPickerDialog();
         Bundle args = new Bundle();
         args.putCharSequenceArray(PLACE_KEY, placesList);
         f.setArguments(args);

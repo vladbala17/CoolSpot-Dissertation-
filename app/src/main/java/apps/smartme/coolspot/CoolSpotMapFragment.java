@@ -64,12 +64,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import apps.smartme.coolspot.dialogs.CoolspotRecommendationDialog;
-import apps.smartme.coolspot.dialogs.PlaceDefineDialog;
-import apps.smartme.coolspot.dialogs.PlaceDetailsDialog;
-import apps.smartme.coolspot.dialogs.PlacePickerDialog;
+import apps.smartme.coolspot.dialogs.CoolspotDefineDialog;
+import apps.smartme.coolspot.dialogs.CoolspotDetailsDialog;
+import apps.smartme.coolspot.dialogs.CoolspotPickerDialog;
 import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.Coolspot;
-import apps.smartme.coolspot.domain.CoolspotLocation;
 import apps.smartme.coolspot.domain.UserCoolspot;
 
 /**
@@ -415,7 +414,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         mapDrinkValueEventListener = populateMapValueEventListener;
     }
 
-    private void populateMapWithSportCoolspots() {
+    public void populateMapWithSportCoolspots() {
         ValueEventListener populateMapValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -873,12 +872,35 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    public void populateCheapFilter(){
+        mMap.clear();
+        for (Coolpoint coolpointCheap : coolpointCheapList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointCheap.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cheap))
+                    .position(new LatLng(coolpointCheap.getLatitude(), coolpointCheap.getLongitude())));
+            Log.d(TAG, "CHEAP PLACE ADDED");
+        }
+    }
+
+    public void populateComputerFilter(){
+        mMap.clear();
+        for (Coolpoint coolpointComputer : coolpointComputerList) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(coolpointComputer.getName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_computer))
+                    .position(new LatLng(coolpointComputer.getLatitude(), coolpointComputer.getLongitude())));
+            Log.d(TAG, "CHEAP PLACE ADDED");
+        }
+    }
+
+
 
     public void populateMapWithFilter(String filter) {
-        if (filter.equals("girls")) {
-//            populateGirlsFilter();
-        } else if (filter.equals("nerd")) {
-//            populateNerdFilter();
+        if (filter.equals("computer")) {
+            populateComputerFilter();
+        } else if (filter.equals("cheap")) {
+            populateCheapFilter();
         } else if (filter.equals("drink")) {
             populateDrinkFilter();
         }
@@ -886,9 +908,9 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
 
     private void openSuggestedPlacesDialog() {
-        PlacePickerDialog placePickerDialog = PlacePickerDialog.newInstance(mLikelyPlaceNames);
-        placePickerDialog.setTargetFragment(this, PLACE_PICKER_DIALOG);
-        placePickerDialog.show(getActivity().getSupportFragmentManager(), "placePicker");
+        CoolspotPickerDialog coolspotPickerDialog = CoolspotPickerDialog.newInstance(mLikelyPlaceNames);
+        coolspotPickerDialog.setTargetFragment(this, PLACE_PICKER_DIALOG);
+        coolspotPickerDialog.show(getActivity().getSupportFragmentManager(), "placePicker");
     }
 
     @Override
@@ -902,9 +924,9 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             case PLACE_PICKER_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
                     // After Ok code.
-                    PlaceDefineDialog placeDefineDialog = PlaceDefineDialog.newInstance(selectedItemName, position);
-                    placeDefineDialog.setTargetFragment(this, PLACE_DEFINE_DIALOG);
-                    placeDefineDialog.show(getActivity().getSupportFragmentManager(), "placeDefine");
+                    CoolspotDefineDialog coolspotDefineDialog = CoolspotDefineDialog.newInstance(selectedItemName, position);
+                    coolspotDefineDialog.setTargetFragment(this, PLACE_DEFINE_DIALOG);
+                    coolspotDefineDialog.show(getActivity().getSupportFragmentManager(), "placeDefine");
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // After Cancel code.
                 }
@@ -1153,7 +1175,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Coolspot coolSpot = dataSnapshot.getValue(Coolspot.class);
-                PlaceDetailsDialog.newInstance(coolSpot.getName(), coolSpot.getTimestamp(), Long.toString(coolSpot.getPopularity())).show(getActivity().getSupportFragmentManager(), "placeDetails");
+                CoolspotDetailsDialog.newInstance(coolSpot.getName(), coolSpot.getTimestamp(), Long.toString(coolSpot.getPopularity())).show(getActivity().getSupportFragmentManager(), "placeDetails");
             }
 
             @Override

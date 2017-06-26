@@ -36,9 +36,9 @@ import apps.smartme.coolspot.adapters.StyleDialogAdapter;
  * Created by vlad on 09.05.2017.
  */
 
-public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
+public class CoolspotDefineDialog extends DialogFragment implements SearchView.OnQueryTextListener {
 
-    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
+    private static final String TAG = CoolspotDetailsDialog.class.getSimpleName();
 
     public static final String PLACE_NAME = "place_name";
     public static final String SELECTED_ITEM_POSITION = "selected_item_position";
@@ -61,8 +61,8 @@ public class PlaceDefineDialog extends DialogFragment implements SearchView.OnQu
     private DatabaseReference coolPointReference;
     private ChildEventListener coolPointChildEventListener;
 
-    public static PlaceDefineDialog newInstance(String placeName, int position) {
-        PlaceDefineDialog t = new PlaceDefineDialog();
+    public static CoolspotDefineDialog newInstance(String placeName, int position) {
+        CoolspotDefineDialog t = new CoolspotDefineDialog();
         Bundle args = new Bundle();
         args.putString(PLACE_NAME, placeName);
         args.putInt(SELECTED_ITEM_POSITION, position);

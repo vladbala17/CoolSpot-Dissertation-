@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/cheap_filter"
+        android:icon="@drawable/ic_cheap"
+        android:title="cheap" />
+
+    <item
+        android:id="@+id/computer_filter"
+        android:icon="@drawable/ic_computer"
+        android:title="it" />
+
+    <item
         android:id="@+id/drink_filter"
         android:icon="@drawable/ic_free_drinks"
         android:title="drink" />
 
     <item
-        android:id="@+id/nerd_filter"
-        android:icon="@drawable/ic_nerd"
-        android:title="fun" />
-
-    <item
-        android:id="@+id/girls_filter"
-        android:icon="@drawable/ic_girls"
-        android:title="girls" />
-
-    <item
-        android:id="@+id/boys_filter"
-        android:icon="@drawable/ic_boys"
-        android:title="boys" />
+        android:id="@+id/no_filter"
+        android:icon="@drawable/ic_minus"
+        android:title="all" />
 
 
 </menu>

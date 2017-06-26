@@ -21,12 +21,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
-import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -38,16 +36,14 @@ import java.util.Locale;
 
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.StyleDialogAdapter;
-import apps.smartme.coolspot.domain.Coolpoint;
-import apps.smartme.coolspot.domain.CoolspotCoolpoint;
 
 /**
  * Created by vlad on 10.05.2017.
  */
 
-public class PlaceDetailsDialog extends DialogFragment {
+public class CoolspotDetailsDialog extends DialogFragment {
 
-    private static final String TAG = PlaceDetailsDialog.class.getSimpleName();
+    private static final String TAG = CoolspotDetailsDialog.class.getSimpleName();
 
     public static final String PLACE_NAME = "placeName";
     public static final String PLACE_POPULARITY = "placePopularity";
@@ -75,8 +71,8 @@ public class PlaceDetailsDialog extends DialogFragment {
     private ChildEventListener coolSpotUsersChildEventListener;
     private ChildEventListener userFriendsChildEventListener;
 
-    public static PlaceDetailsDialog newInstance(String coolSpotName, long timeStamp, String popularity) {
-        PlaceDetailsDialog f = new PlaceDetailsDialog();
+    public static CoolspotDetailsDialog newInstance(String coolSpotName, long timeStamp, String popularity) {
+        CoolspotDetailsDialog f = new CoolspotDetailsDialog();
         Bundle args = new Bundle();
         args.putString(PLACE_NAME, coolSpotName);
         args.putLong(PLACE_TIMESTAMP, timeStamp);

@@ -8,9 +8,11 @@
         android:id="@+id/place_picker_title"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:maxLines="1"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
+        android:textAlignment="center"
         android:text="ssssssss"
         android:textColor="#000000"
         android:textSize="16sp" />

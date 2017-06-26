@@ -89,7 +89,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.filter_bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.getMenu().getItem(3).setChecked(true);
+//        bottomNavigationView.getMenu().getItem(3).setChecked(true);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -112,7 +112,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         });
 
         coolSpotMapFragment = new CoolSpotMapFragment();
-        changeTypeface(navigationView);
+        changeTypeface(navigationView, bottomNavigationView);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.map_fragment_container, coolSpotMapFragment).commit();
@@ -173,7 +173,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         item.setTitle(mNewTitle);
     }
 
-    private void changeTypeface(NavigationView navigationView) {
+    private void changeTypeface(NavigationView navigationView, BottomNavigationView bottomNavigationView) {
         FontTypeface fontTypeface = new FontTypeface(this);
         Typeface typeface = fontTypeface.getTypefaceAndroid();
 
@@ -198,8 +198,23 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         item = navigationView.getMenu().findItem(R.id.nav_rate_app);
         item.setTitle("Rate the app");
         applyFontToItem(item, typeface);
-    }
 
+        item = bottomNavigationView.getMenu().findItem(R.id.cheap_filter);
+        item.setTitle("Cheap");
+        applyFontToItem(item, typeface);
+
+        item = bottomNavigationView.getMenu().findItem(R.id.computer_filter);
+        item.setTitle("Computer");
+        applyFontToItem(item, typeface);
+
+        item = bottomNavigationView.getMenu().findItem(R.id.drink_filter);
+        item.setTitle("Drink");
+        applyFontToItem(item, typeface);
+
+        item = bottomNavigationView.getMenu().findItem(R.id.no_filter);
+        item.setTitle("All");
+        applyFontToItem(item, typeface);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -220,13 +235,17 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.nav_rate_app:
                 break;
-            case R.id.boys_filter:
+            case R.id.no_filter:
+                coolSpotMapFragment.populateMapWithComputerLocations();
+                coolSpotMapFragment.populateMapWithDrinkLocations();
+                coolSpotMapFragment.populateMapWithSportLocations();
+                coolSpotMapFragment.populateMapWithCheapLocations();
                 break;
-            case R.id.girls_filter:
-                coolSpotMapFragment.populateMapWithFilter("girls");
+            case R.id.cheap_filter:
+                coolSpotMapFragment.populateMapWithFilter("cheap");
                 break;
-            case R.id.nerd_filter:
-                coolSpotMapFragment.populateMapWithFilter("nerd");
+            case R.id.computer_filter:
+                coolSpotMapFragment.populateMapWithFilter("computer");
                 break;
             case R.id.drink_filter:
                 coolSpotMapFragment.populateMapWithFilter("drink");
