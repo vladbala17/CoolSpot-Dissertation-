@@ -972,14 +972,14 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
                                 updateCoolpointFirst(placeName, coolPointFirst);
                                 updateCoolspotUserChild(placeName);
                                 updateUserLocationChild(placeName, userCoolspot);
-//                                updateUserLocationDateChild(timestamp, placeName);
+                                updateUserLocationDateChild(timestamp, placeName);
                             } else {
                                 addCoolspotChild(placeName, coolspot);
                                 addCoolspotDrinkChild(placeName, coolspot);
                                 addCoolspotCoolpoint(placeName, coolPointFirst, coolPointSecond);
                                 addCoolspotUsers(placeName, "Vlad Bala");
                                 addUserLocationChild(placeName, userCoolspot);
-//                                addUserLocationDateChild(placeName, timestamp);
+                                addUserLocationDateChild(placeName, timestamp);
                             }
                         }
 

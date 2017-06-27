@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/location_iv"
-        android:text="Location name" />
+        android:text="" />
 
     <TextView
         android:id="@+id/location_value_tv"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/location_name_tv"
         android:layout_toRightOf="@id/location_iv"
-        android:text="Date" />
+        android:text="Last visit " />
 
     <TextView
         android:id="@+id/location_date_value_tv"
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/location_date_tv"
         android:layout_toRightOf="@id/location_iv"
-        android:text="Used filters" />
+        android:text="Used coolpoints" />
 
     <LinearLayout
         android:id="@+id/used_filters_layout"
@@ -56,13 +56,15 @@
         android:layout_toEndOf="@+id/location_iv"
         android:background="@color/colorAccent">
 
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+        <ImageView
+            android:id="@+id/first_coolpoint_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+        <ImageView
+            android:id="@+id/second_coolpoint_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 
     </LinearLayout>
@@ -74,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/used_filters_layout"
         android:layout_toRightOf="@id/location_iv"
-        android:text="Hits" />
+        android:text="Hits " />
 
     <TextView
         android:id="@+id/location_visits_value_tv"

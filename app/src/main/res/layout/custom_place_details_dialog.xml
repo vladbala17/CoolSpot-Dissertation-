@@ -39,7 +39,7 @@
         android:layout_below="@id/place_details_name"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/tv_last_visited_value"
-        android:text="ago" />
+        android:text="" />
 
 
     <TextView

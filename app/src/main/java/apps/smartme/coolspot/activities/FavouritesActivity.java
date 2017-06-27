@@ -1,11 +1,13 @@
 package apps.smartme.coolspot.activities;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -19,7 +21,6 @@ import java.util.List;
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.adapters.FavouriteAdapter;
 import apps.smartme.coolspot.adapters.RecyclerTouchListener;
-import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.UserCoolspot;
 
 public class FavouritesActivity extends AppCompatActivity {
@@ -29,6 +30,9 @@ public class FavouritesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
     private List<UserCoolspot> userCoolspotList = new ArrayList<>();
+    private TextView favPlacesTextView;
+    private Typeface typeface;
+
 
     private DatabaseReference databaseReference;
     private DatabaseReference userCoolspotReference;
@@ -70,8 +74,11 @@ public class FavouritesActivity extends AppCompatActivity {
         userCoolspotChildEventListener = childEventListener;
 
         setContentView(R.layout.activity_favourites);
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/android.ttf");
+        favPlacesTextView = (TextView) findViewById(R.id.favourite_places_name);
+        favPlacesTextView.setTypeface(typeface);
         mRecyclerView = (RecyclerView) findViewById(R.id.favourites_recycler_view);
-        mAdapter = new FavouriteAdapter(userCoolspotList);
+        mAdapter = new FavouriteAdapter(userCoolspotList, typeface);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.setStackFromEnd(true);

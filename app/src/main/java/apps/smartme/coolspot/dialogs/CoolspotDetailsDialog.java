@@ -2,6 +2,7 @@ package apps.smartme.coolspot.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -61,7 +63,13 @@ public class CoolspotDetailsDialog extends DialogFragment {
     private TextView timeLastVisitedTextView;
     private TextView coolPointsNumberTextView;
     private TextView mutualFriendsNumberTextView;
+    private TextView timeLastVisitedLbl;
+    private TextView coolPointsLbl;
+    private TextView mutualFriendsLbl;
+    private Button tkmThereButton;
+    private Button klButton;
     private StyleDialogAdapter mAdapter;
+    private Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
 
     private DatabaseReference databaseReference;
     private DatabaseReference coolSpotCoolpointsReference;
@@ -123,23 +131,6 @@ public class CoolspotDetailsDialog extends DialogFragment {
 
             }
         };
-
-//        ValueEventListener valueEventListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                CoolspotCoolpoint coolpoint = dataSnapshot.getValue(CoolspotCoolpoint.class);
-//                if (isRecentEnough(coolpoint.getTimestamp())) {
-//                    coolspotCoolPointList.add(coolpoint.getCoolpointFirst());
-//                    coolspotCoolPointList.add(coolpoint.getCoolpointSecond());
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
 
         coolSpotCoolpointsReference.orderByValue().limitToLast(2).addChildEventListener(childEventListener2);
         coolSpotCoolpointChildEventListener = childEventListener2;
@@ -212,7 +203,6 @@ public class CoolspotDetailsDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        prepareStyleData();
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
@@ -222,27 +212,53 @@ public class CoolspotDetailsDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView()");
-        View placeDefineDialog = inflater.inflate(R.layout.custom_place_details_dialog, null, false);
+        View view = inflater.inflate(R.layout.custom_place_details_dialog, null, false);
         String placeDefineTitle = getArguments().getString(PLACE_NAME);
         long placeTimestamp = getArguments().getLong(PLACE_TIMESTAMP);
         String lastActivity = getTimeSinceLastVisit(placeTimestamp);
         String placePopularity = getArguments().getString(PLACE_POPULARITY);
         coolspotCoolPointList = new ArrayList<>();
-        placeDefineTextView = (TextView) placeDefineDialog.findViewById(R.id.place_details_name);
-        timeLastVisitedTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_last_visited_value);
-        coolPointsNumberTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_coolpoints_number);
-        mutualFriendsNumberTextView = (TextView) placeDefineDialog.findViewById(R.id.tv_mutual_friends_value);
+        placeDefineTextView = (TextView) view.findViewById(R.id.place_details_name);
+        placeDefineTextView.setTypeface(tf);
+        timeLastVisitedTextView = (TextView) view.findViewById(R.id.tv_last_visited_value);
+        timeLastVisitedTextView.setTypeface(tf);
+        coolPointsNumberTextView = (TextView) view.findViewById(R.id.tv_coolpoints_number);
+        coolPointsNumberTextView.setTypeface(tf);
+        mutualFriendsNumberTextView = (TextView) view.findViewById(R.id.tv_mutual_friends_value);
+        coolPointsNumberTextView.setTypeface(tf);
         coolPointsNumberTextView.setText(String.valueOf(placePopularity));
         timeLastVisitedTextView.setText(lastActivity);
         placeDefineTextView.setText(placeDefineTitle);
-        recyclerView = (RecyclerView) placeDefineDialog.findViewById(R.id.cool_points_recycler_view);
-        mAdapter = new StyleDialogAdapter(coolspotCoolPointList);
+        coolPointsLbl = (TextView) view.findViewById(R.id.cool_points_text_view);
+        coolPointsLbl.setTypeface(tf);
+        timeLastVisitedLbl = (TextView) view.findViewById(R.id.time_last_visited);
+        timeLastVisitedLbl.setTypeface(tf);
+        mutualFriendsLbl = (TextView) view.findViewById(R.id.mutual_friends_text_view);
+        mutualFriendsLbl.setTypeface(tf);
+        tkmThereButton = (Button) view.findViewById(R.id.take_me_there_btn);
+        tkmThereButton.setTypeface(tf);
+        klButton = (Button) view.findViewById(R.id.keep_looking_btn);
+        klButton.setTypeface(tf);
+        klButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog().dismiss();
+            }
+        });
+        tkmThereButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        recyclerView = (RecyclerView) view.findViewById(R.id.cool_points_recycler_view);
+        mAdapter = new StyleDialogAdapter(coolspotCoolPointList,tf);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
 
-        return placeDefineDialog;
+        return view;
     }
 
     @Override
@@ -263,17 +279,6 @@ public class CoolspotDetailsDialog extends DialogFragment {
 
     }
 
-    private void prepareStyleData() {
-//        Coolpoint style = new Coolpoint("Caca", 2015);
-//        coolPointList.add(style);
-//        Coolpoint style1 = new Coolpoint("Maca", 2015);
-//        coolPointList.add(style1);
-//        Coolpoint style2 = new Coolpoint("Para", 2015);
-//        coolPointList.add(style2);
-
-
-//        mAdapter.notifyDataSetChanged();
-    }
 
     private boolean isRecentEnough(long timestamp) {
         Long currentDateTimestamp = System.currentTimeMillis() / 1000;
@@ -296,13 +301,20 @@ public class CoolspotDetailsDialog extends DialogFragment {
         DateTime lastModified = dtf.parseDateTime(new Timestamp(timestamp).toString());
         DateTime present = dtf.parseDateTime(new Timestamp(System.currentTimeMillis()).toString());
 
-        if (Hours.hoursBetween(lastModified, present)
-                .isLessThan(Hours.hours(2))) {
-            longAgo = String.valueOf(Hours.hoursBetween(present, lastModified).getHours()) + "hours ";
-            longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
+
+        if (Minutes.minutesBetween(lastModified, present).isLessThan(Minutes.minutes(1))) {
+            longAgo = "few moments ago";
+
         } else {
-            longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + " minutes ";
+            if ((Hours.hoursBetween(lastModified, present)
+                    .isLessThan(Hours.hours(1)))) {
+                longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + "minutes ago";
+            } else {
+                longAgo = String.valueOf(Hours.hoursBetween(present, lastModified).getHours()) + " hour and ";
+                longAgo = longAgo + " " + String.valueOf(Minutes.minutesBetween(lastModified, present).getMinutes()) + "minutes ago";
+            }
         }
+
         Log.d(TAG, "db timestamp is " + getDateFromTimestamp(timestamp) + " difference is " + Hours.hoursBetween(lastModified, present).getHours() % 24 + " hours");
         return longAgo;
     }
@@ -328,6 +340,7 @@ public class CoolspotDetailsDialog extends DialogFragment {
             }
         }
         mutualFriendsNumberTextView.setText(String.valueOf(count));
+        mutualFriendsNumberTextView.setTypeface(tf);
         return;
     }
 }

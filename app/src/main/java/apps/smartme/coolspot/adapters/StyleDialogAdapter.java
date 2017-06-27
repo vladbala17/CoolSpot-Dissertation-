@@ -1,5 +1,6 @@
 package apps.smartme.coolspot.adapters;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,13 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
 
     private List<String> styleList;
     private ArrayList<String> arraylist;
+    private Typeface typeface;
 
-    public StyleDialogAdapter(List<String> styleList) {
+    public StyleDialogAdapter(List<String> styleList, Typeface typeface) {
         this.styleList = styleList;
         this.arraylist = new ArrayList<String>();
         this.arraylist.addAll(styleList);
+        this.typeface = typeface;
     }
 
     @Override
@@ -72,6 +75,9 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
             case "bored":
                 holder.image.setImageResource(R.drawable.ic_bored);
                 break;
+            case "sport":
+                holder.image.setImageResource(R.drawable.ic_basketball);
+                break;
             default:
                 holder.image.setImageResource(R.drawable.ic_free_drinks);
                 break;
@@ -90,6 +96,7 @@ public class StyleDialogAdapter extends RecyclerView.Adapter<StyleDialogAdapter.
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.display_image_title);
+            title.setTypeface(typeface);
             image = (ImageView) view.findViewById(R.id.display_image);
         }
     }

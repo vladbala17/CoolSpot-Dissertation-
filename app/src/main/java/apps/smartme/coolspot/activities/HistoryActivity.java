@@ -1,5 +1,6 @@
 package apps.smartme.coolspot.activities;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ public class HistoryActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private FavouriteAdapter mAdapter;
     private List<UserCoolspot> userCoolspotList = new ArrayList<>();
+    private Typeface typeface;
 
     private DatabaseReference databaseReference;
     private DatabaseReference userCoolspotReference;
@@ -68,8 +70,9 @@ public class HistoryActivity extends AppCompatActivity {
         userCoolspotChildEventListener = childEventListener;
 
         setContentView(R.layout.activity_favourites);
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/android.ttf");
         mRecyclerView = (RecyclerView) findViewById(R.id.favourites_recycler_view);
-        mAdapter = new FavouriteAdapter(userCoolspotList);
+        mAdapter = new FavouriteAdapter(userCoolspotList, typeface);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.setStackFromEnd(true);
