@@ -61,9 +61,6 @@ public class CoolspotDefineDialog extends DialogFragment implements SearchView.O
     private TextView whatIsCoolTextView;
     private Typeface tf;
 
-    private DatabaseReference databaseReference;
-    private DatabaseReference coolPointReference;
-    private ChildEventListener coolPointChildEventListener;
     private boolean pickedFirst = false;
 
     public static CoolspotDefineDialog newInstance(String placeName, int position) {
@@ -78,8 +75,6 @@ public class CoolspotDefineDialog extends DialogFragment implements SearchView.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        databaseReference = FirebaseDatabase.getInstance().getReference();
-//        coolPointReference = databaseReference.child("Coolpoint");
         Log.d(TAG, "onCreate()");
         styleList.add("drink");
         styleList.add("fun");
@@ -92,45 +87,12 @@ public class CoolspotDefineDialog extends DialogFragment implements SearchView.O
         styleList.add("expensive");
         styleList.add("bored");
         styleList.add("sport");
-//        ChildEventListener childEventCoolspotListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                Log.d(TAG, "====FIREBASE IN ACTION======");
-//                styleList.add(dataSnapshot.getKey());
-//                mAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        coolPointReference.addChildEventListener(childEventCoolspotListener);
-//        coolPointChildEventListener = childEventCoolspotListener;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         styleList.clear();
-//        if (coolPointChildEventListener != null) {
-//            coolPointReference.removeEventListener(coolPointChildEventListener);
-//        }
     }
 
     @Nullable

@@ -70,6 +70,9 @@ public class CoolPointAdapter extends CursorAdapter {
             case "bored":
                 image.setImageResource(R.drawable.ic_bored);
                 break;
+            case "sport":
+                image.setImageResource(R.drawable.ic_basketball);
+                break;
             default:
                 image.setImageResource(R.drawable.ic_free_drinks);
                 break;

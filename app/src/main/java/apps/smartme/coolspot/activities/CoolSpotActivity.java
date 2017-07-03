@@ -58,16 +58,11 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     private List<String> arraylist = new ArrayList<>();
     private String userID;
 
-    private DatabaseReference databaseReference;
-    private DatabaseReference coolPointReference;
-    private ChildEventListener coolPointChildEventListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cool_spot);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        coolPointReference = databaseReference.child(COOLPOINT);
+
 
         coolPointSearchView = (SearchView) findViewById(R.id.sv_coolpoint);
         coolPointSearchView.setOnQueryTextListener(this);
@@ -133,36 +128,19 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onStart() {
         super.onStart();
-        ChildEventListener childEventCoolspotListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded search list populated");
-                coolpointList.add(dataSnapshot.getKey());
-                arraylist.add(dataSnapshot.getKey());
-            }
+        arraylist.add("drink");
+        arraylist.add("fun");
+        arraylist.add("girls");
+        arraylist.add("nerd");
+        arraylist.add("cheap");
+        arraylist.add("crowded");
+        arraylist.add("dance");
+        arraylist.add("computer");
+        arraylist.add("expensive");
+        arraylist.add("bored");
+        arraylist.add("sport");
+        coolpointList.addAll(arraylist);
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        coolPointReference.addChildEventListener(childEventCoolspotListener);
-        coolPointChildEventListener = childEventCoolspotListener;
 
     }
 

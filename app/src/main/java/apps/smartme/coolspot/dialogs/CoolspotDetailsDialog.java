@@ -69,7 +69,7 @@ public class CoolspotDetailsDialog extends DialogFragment {
     private Button tkmThereButton;
     private Button klButton;
     private StyleDialogAdapter mAdapter;
-    private Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
+    private Typeface tf;
 
     private DatabaseReference databaseReference;
     private DatabaseReference coolSpotCoolpointsReference;
@@ -212,6 +212,7 @@ public class CoolspotDetailsDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView()");
+        tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
         View view = inflater.inflate(R.layout.custom_place_details_dialog, null, false);
         String placeDefineTitle = getArguments().getString(PLACE_NAME);
         long placeTimestamp = getArguments().getLong(PLACE_TIMESTAMP);
@@ -252,7 +253,7 @@ public class CoolspotDetailsDialog extends DialogFragment {
             }
         });
         recyclerView = (RecyclerView) view.findViewById(R.id.cool_points_recycler_view);
-        mAdapter = new StyleDialogAdapter(coolspotCoolPointList,tf);
+        mAdapter = new StyleDialogAdapter(coolspotCoolPointList, tf);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
