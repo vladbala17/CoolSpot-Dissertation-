@@ -2,6 +2,7 @@ package apps.smartme.coolspot.dialogs;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import apps.smartme.coolspot.R;
 import apps.smartme.coolspot.domain.Coolpoint;
+import apps.smartme.coolspot.domain.Recommendation;
 
 /**
  * Created by vlad on 16.06.2017.
@@ -40,22 +42,25 @@ public class CoolspotRecommendationDialog extends DialogFragment implements View
     private TextView coolspotNameTextView;
     private TextView coolspotPopularityTextView;
     private TextView coolspotMutualFriendsTextView;
+    private TextView placeDetailsTitleTextView;
+
+    private Typeface typeface;
 
     private Button takeMeThereButton;
-
+    private Button recommendAnotherButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public static CoolspotRecommendationDialog newInstance(String name, String coolpoint, int popularity, int mutualFriends) {
+    public static CoolspotRecommendationDialog newInstance(Recommendation recommendation) {
         CoolspotRecommendationDialog fragment = new CoolspotRecommendationDialog();
         Bundle bundle = new Bundle();
-        bundle.putString(NAME_KEY, name);
-        bundle.putString(COOLPOINT_KEY, coolpoint);
-        bundle.putInt(COOLPOINT_POPULARITY_KEY, popularity);
-        bundle.putInt(COOLPOINT_MUTUAL_FRIENDS_KEY, mutualFriends);
+        bundle.putString(NAME_KEY, recommendation.getCoolspotName());
+        bundle.putString(COOLPOINT_KEY, recommendation.getCoolpoint());
+        bundle.putInt(COOLPOINT_POPULARITY_KEY, recommendation.getPopularity());
+        bundle.putInt(COOLPOINT_MUTUAL_FRIENDS_KEY, recommendation.getMutualFriendsNo());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -64,19 +69,27 @@ public class CoolspotRecommendationDialog extends DialogFragment implements View
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.custom_coolspot_recommendation_dialog, null, false);
-
+        typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/android.ttf");
         String name = getArguments().getString(NAME_KEY);
         int popularity = getArguments().getInt(COOLPOINT_POPULARITY_KEY);
         int mutualFriends = getArguments().getInt(COOLPOINT_MUTUAL_FRIENDS_KEY);
+        placeDetailsTitleTextView = (TextView) view.findViewById(R.id.place_details_name);
+        placeDetailsTitleTextView.setTypeface(typeface);
         popularCoolpointImageView = (ImageView) view.findViewById(R.id.iv_coolspot_popular_coolpoint);
         coolspotNameTextView = (TextView) view.findViewById(R.id.tv_coolspot_name_value);
+        coolspotNameTextView.setTypeface(typeface);
         coolspotPopularityTextView = (TextView) view.findViewById(R.id.tv_coolspot_popularity_value);
+        coolspotPopularityTextView.setTypeface(typeface);
         coolspotMutualFriendsTextView = (TextView) view.findViewById(R.id.tv_coolspot_mutual_friends_value);
+        coolspotMutualFriendsTextView.setTypeface(typeface);
         takeMeThereButton = (Button) view.findViewById(R.id.take_me_there_btn);
+        takeMeThereButton.setTypeface(typeface);
 //        coolspotNameTextView.setText(name);
 //        coolspotPopularityTextView.setText(String.valueOf(popularity));
 //        coolspotMutualFriendsTextView.setText(String.valueOf(mutualFriends));
         takeMeThereButton.setOnClickListener(this);
+        recommendAnotherButton = (Button) view.findViewById(R.id.keep_looking_btn);
+        recommendAnotherButton.setTypeface(typeface);
         return view;
 
 

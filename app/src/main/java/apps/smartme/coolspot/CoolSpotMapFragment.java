@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -69,7 +70,9 @@ import apps.smartme.coolspot.dialogs.CoolspotDetailsDialog;
 import apps.smartme.coolspot.dialogs.CoolspotPickerDialog;
 import apps.smartme.coolspot.domain.Coolpoint;
 import apps.smartme.coolspot.domain.Coolspot;
+import apps.smartme.coolspot.domain.Recommendation;
 import apps.smartme.coolspot.domain.UserCoolspot;
+import apps.smartme.coolspot.helpers.Helper;
 
 /**
  * Created by vlad on 26.03.2017.
@@ -97,6 +100,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     public static final String COOLPOINT_COMPUTER = "CoolpointComputer";
     public static final String COOLPOINT_EXPENSIVE = "CoolpointExpensive";
     public static final String COOLSPOT = "Coolspot";
+    public static final String USER_LIKES = "UserLikes";
 
     //Firebase references
     private DatabaseReference databaseReference;
@@ -113,6 +117,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private DatabaseReference coolPointCheapReference;
     private DatabaseReference coolPointComputerReference;
     private DatabaseReference coolPointExpensiveReference;
+    private DatabaseReference coolPointRecommendationReference;
     private ValueEventListener coolSpotValueEventListener;
     private ValueEventListener mapDrinkValueEventListener;
     private ValueEventListener mapSportValueEventListener;
@@ -125,6 +130,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private ChildEventListener coolPointCheapChildEventListener;
     private ChildEventListener coolPointComputerChildEventListener;
     private ChildEventListener coolPointExpensiveChildEventListener;
+    private ChildEventListener recomendationChildEventListener;
 
 
     private List<Coolpoint> coolpointDrinkList = new ArrayList<>();
@@ -132,6 +138,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
     private List<Coolpoint> coolpointCheapList = new ArrayList<>();
     private List<Coolpoint> coolpointComputerList = new ArrayList<>();
     private List<Coolpoint> coolpointExpensiveList = new ArrayList<>();
+    private List<String> userLikesList = new ArrayList<>();
     private ImageView recommendButton;
 
 
@@ -186,6 +193,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         populateMapComputerReference = databaseReference.child(COOLPOINT_COMPUTER);
         coolPointExpensiveReference = databaseReference.child(COOLPOINT_EXPENSIVE);
         populateMapExpensiveReference = databaseReference.child(COOLPOINT_EXPENSIVE);
+        coolPointRecommendationReference = databaseReference.child(USER_LIKES);
         coolSpotReference = databaseReference.child(COOLSPOT);
     }
 
@@ -377,6 +385,38 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         coolPointDrinkChildEventListener = childEventCoolpointDrinkListener;
     }
 
+    private void getUserLikes() {
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                userLikesList.add(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        coolPointRecommendationReference.addChildEventListener(childEventListener);
+        recomendationChildEventListener = childEventListener;
+    }
+
+
     private boolean isRecentEnough(long timestamp) {
         Long currentDateTimestamp = System.currentTimeMillis() / 1000;
         String fetchedDateTime = getDateFromTimestamp(timestamp);
@@ -528,6 +568,10 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         if (coolSpotValueEventListener != null) {
             coolSpotReference.removeEventListener(coolSpotValueEventListener);
         }
+
+        if (recomendationChildEventListener != null) {
+            coolPointRecommendationReference.removeEventListener(recomendationChildEventListener);
+        }
     }
 
     @Override
@@ -538,8 +582,9 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
-
-                CoolspotRecommendationDialog coolspotRecommendationDialog = CoolspotRecommendationDialog.newInstance("vlad", "vlad", 1, 1);
+                Helper reccomendationHelper = new Helper(userLikesList);
+                Recommendation recommendation = new Recommendation();
+                CoolspotRecommendationDialog coolspotRecommendationDialog = CoolspotRecommendationDialog.newInstance(recommendation);
                 coolspotRecommendationDialog.show(getActivity().getSupportFragmentManager(), "placeRecommendation");
             }
         });
@@ -872,7 +917,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void populateCheapFilter(){
+    public void populateCheapFilter() {
         mMap.clear();
         for (Coolpoint coolpointCheap : coolpointCheapList) {
             mMap.addMarker(new MarkerOptions()
@@ -883,7 +928,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void populateComputerFilter(){
+    public void populateComputerFilter() {
         mMap.clear();
         for (Coolpoint coolpointComputer : coolpointComputerList) {
             mMap.addMarker(new MarkerOptions()
@@ -893,7 +938,6 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             Log.d(TAG, "CHEAP PLACE ADDED");
         }
     }
-
 
 
     public void populateMapWithFilter(String filter) {
