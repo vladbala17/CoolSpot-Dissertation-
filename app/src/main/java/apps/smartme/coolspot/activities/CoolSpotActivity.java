@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -98,6 +99,7 @@ public class CoolSpotActivity extends AppCompatActivity implements NavigationVie
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 AccessToken.setCurrentAccessToken(null);
                 Intent intent = new Intent(CoolSpotActivity.this, LoginActivity.class);

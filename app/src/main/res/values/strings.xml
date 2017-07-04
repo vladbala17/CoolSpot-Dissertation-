@@ -11,4 +11,5 @@
     <string name="cancel">pleaca</string>
     <string name="search">search coolpoint</string>
     <string name="search_title">Search</string>
+    <string name="loading">loading</string>
 </resources>
