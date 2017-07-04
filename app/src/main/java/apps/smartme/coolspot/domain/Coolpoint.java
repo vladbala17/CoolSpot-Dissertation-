@@ -6,7 +6,7 @@ package apps.smartme.coolspot.domain;
 
 public class Coolpoint {
 
-    private long count;
+    private long popularity;
     private String name;
     private double latitude;
     private double longitude;
@@ -15,20 +15,20 @@ public class Coolpoint {
     public Coolpoint() {
     }
 
-    public Coolpoint(long count, String name, double latitude, double longitude, long timestamp) {
-        this.count = count;
+    public Coolpoint(long popularity, String name, double latitude, double longitude, long timestamp) {
+        this.popularity = popularity;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = timestamp;
     }
 
-    public long getCount() {
-        return count;
+    public long getPopularity() {
+        return popularity;
     }
 
-    public void setCount(long count) {
-        this.count = count;
+    public void setPopularity(long popularity) {
+        this.popularity = popularity;
     }
 
     public String getName() {
@@ -66,7 +66,7 @@ public class Coolpoint {
     @Override
     public String toString() {
         return "Coolpoint{" +
-                "count=" + count +
+                "popularity=" + popularity +
                 ", name='" + name + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +

@@ -23,6 +23,11 @@ public class Helper {
     private static final String cheapList = "China Free Discount Cheap Original eBay Amazon Ali";
     private static final String computerList = "Dell IT Android iOS nVidia Nerd Sony LG Computers Samsung Huawei";
     private static final String expensiveList = "Dell IT Android iOS nVidia Nerd Sony LG Computers Samsung Huawei";
+    public static final String COOLPOINT_DRINK = "CoolpointDrink";
+    public static final String COOLPOINT_SPORT = "CoolpointSport";
+    public static final String COOLPOINT_CHEAP = "CoolpointCheap";
+    public static final String COOLPOINT_COMPUTER = "CoolpointComputer";
+    public static final String COOLPOINT_EXPENSIVE = "CoolpointExpensive";
 
 
     private List<String> likesList = new ArrayList<>();
@@ -30,22 +35,18 @@ public class Helper {
 
     public Helper(List<String> likesList) {
         this.likesList = likesList;
-        categoryList.add(new Category("Drink", 0));
-        categoryList.add(new Category("Sport", 0));
-        categoryList.add(new Category("Cheap", 0));
-        categoryList.add(new Category("Computer", 0));
-        categoryList.add(new Category("Expensive", 0));
-        likesList.add("Captain");
-        likesList.add("Jack Daniels");
-        likesList.add("Jack Drink");
-        likesList.add("sport");
-        likesList.add("captain morgan");
-        likesList.add("Rafael Nadal");
-        likesList.add("Tennis");
-        likesList.add("Ball");
-        likesList.add("Roger Federer");
+        initializeCategoryList();
+
         splitLikesToCategory();
 
+    }
+
+    private void initializeCategoryList() {
+        categoryList.add(new Category(COOLPOINT_DRINK, 0));
+        categoryList.add(new Category(COOLPOINT_SPORT, 0));
+        categoryList.add(new Category(COOLPOINT_CHEAP, 0));
+        categoryList.add(new Category(COOLPOINT_COMPUTER, 0));
+        categoryList.add(new Category(COOLPOINT_EXPENSIVE, 0));
     }
 
 
@@ -55,7 +56,6 @@ public class Helper {
         }
 
         Log.d(TAG, "unsorted list is" + categoryList.toString());
-        coolpointCategory(categoryList);
     }
 
     private void countCategory(String like) {
@@ -86,7 +86,7 @@ public class Helper {
     }
 
 
-    private String coolpointCategory(List<Category> categoryList) {
+    public String coolpointCategory() {
         Collections.sort(categoryList, new CategoryComparator());
         Log.d(TAG, "preffered category is" + categoryList.get(0).getName());
         return categoryList.get(0).getName();

@@ -208,6 +208,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         getCoolspotCheapDb();
         getCoolspotComputerDb();
         getCoolspotExpensiveDb();
+        getUserLikes();
         populateMapWithDrinkCoolspots();
         populateMapWithSportCoolspots();
         populateMapWithCheapCoolspots();
@@ -245,7 +246,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        coolPointSportReference.addChildEventListener(childEventCoolpointSportListener);
+        coolPointSportReference.orderByChild("Popularity").addChildEventListener(childEventCoolpointSportListener);
         coolPointSportChildEventListener = childEventCoolpointSportListener;
     }
 
@@ -279,7 +280,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        coolPointExpensiveReference.addChildEventListener(childEventCoolpointExpensiveListener);
+        coolPointExpensiveReference.orderByChild("Popularity").addChildEventListener(childEventCoolpointExpensiveListener);
         coolPointExpensiveChildEventListener = childEventCoolpointExpensiveListener;
     }
 
@@ -313,7 +314,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        coolPointCheapReference.addChildEventListener(childEventCoolpointCheapListener);
+        coolPointCheapReference.orderByChild("Popularity").addChildEventListener(childEventCoolpointCheapListener);
         coolPointCheapChildEventListener = childEventCoolpointCheapListener;
     }
 
@@ -347,7 +348,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        coolPointComputerReference.addChildEventListener(childEventCoolpointComputerListener);
+        coolPointComputerReference.orderByChild("Popularity").addChildEventListener(childEventCoolpointComputerListener);
         coolPointComputerChildEventListener = childEventCoolpointComputerListener;
     }
 
@@ -381,7 +382,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
 
             }
         };
-        coolPointDrinkReference.addChildEventListener(childEventCoolpointDrinkListener);
+        coolPointDrinkReference.orderByChild("Popularity").addChildEventListener(childEventCoolpointDrinkListener);
         coolPointDrinkChildEventListener = childEventCoolpointDrinkListener;
     }
 
@@ -389,7 +390,7 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                userLikesList.add(dataSnapshot.getValue(String.class));
+                userLikesList.add(dataSnapshot.getKey());
             }
 
             @Override
@@ -582,9 +583,10 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getActivity(), "Proba", Toast.LENGTH_SHORT).show();
-                Helper reccomendationHelper = new Helper(userLikesList);
-                Recommendation recommendation = new Recommendation();
-                CoolspotRecommendationDialog coolspotRecommendationDialog = CoolspotRecommendationDialog.newInstance(recommendation);
+                Helper recomendationHelper = new Helper(userLikesList);
+                String category = recomendationHelper.coolpointCategory();
+                Coolpoint coolpoint = getPrefferedCoolspot(category);
+                CoolspotRecommendationDialog coolspotRecommendationDialog = CoolspotRecommendationDialog.newInstance(coolpoint);
                 coolspotRecommendationDialog.show(getActivity().getSupportFragmentManager(), "placeRecommendation");
             }
         });
@@ -607,6 +609,23 @@ public class CoolSpotMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
         return view;
+    }
+
+    private Coolpoint getPrefferedCoolspot(String category) {
+        switch (category) {
+            case "CoolpointDrink":
+                return coolpointDrinkList.get(coolpointDrinkList.size() - 1);
+            case "CoolpointSport":
+                return coolpointSportList.get(coolpointSportList.size() - 1);
+            case "CoolpointCheap":
+                return coolpointCheapList.get(coolpointCheapList.size() - 1);
+            case "CoolpointComputer":
+                return coolpointComputerList.get(coolpointComputerList.size() - 1);
+            case "CoolpointExpensive":
+                return coolpointExpensiveList.get(coolpointExpensiveList.size() - 1);
+            default:
+                return coolpointDrinkList.get(coolpointDrinkList.size() - 1);
+        }
     }
 
 
